@@ -485,3 +485,23 @@ puts "The first number multiplied by the second number is #{num_1.to_i * num_2.t
 10.eql?(10.0)
 # => false
 ```
+
+
+## 23. Methods
+
+同じ処理を繰り返し書かないようにするためにメソッドを用いる。
+Rubyではメソッド内で最後に評価された値が戻り値となる。
+明示的に`return`することもできる。
+メソッドは利用する前に定義する必要がある。
+
+```ruby
+def multiply(first_num, second_num)
+  first_num.to_f * second_num.to_f
+end
+
+puts "Please enter your first number"
+first_number = gets.chomp
+puts "Please enter your second number"
+second_number = gets.chomp
+puts "The first number multiplied by the second number is: #{multiply(first_number, second_number)}"
+```
