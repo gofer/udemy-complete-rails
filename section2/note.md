@@ -505,3 +505,209 @@ puts "Please enter your second number"
 second_number = gets.chomp
 puts "The first number multiplied by the second number is: #{multiply(first_number, second_number)}"
 ```
+
+
+## 24. Branching `if` / `elsif` / `else` / `end`
+
+Rubyでは`if` / `elsif` / `else` / `end`により条件分岐を表す。
+
+```ruby
+# if / else
+if true
+  # execute some code
+else
+  # execute some other code
+end
+```
+
+### `if` / `else` / `end`
+
+```ruby
+if true
+  puts "Hello"
+end
+# Hello
+
+if true
+  puts "Hello"
+else
+  puts "Bye"
+end
+# Hello
+
+if true
+  puts "Hello"
+else
+  puts "Bye"
+end
+puts "La la la"
+# Hello
+# La la la
+
+condition = false
+if condition
+  puts "Hello"
+else
+  puts "Bye"
+end
+puts "La la la"
+# Bye
+# La la la
+
+condition = true
+if condition
+  puts "Hello"
+else
+  puts "Bye"
+end
+puts "La la la"
+# Hello
+# La la la
+```
+
+### 複数の条件
+
+`&&`は論理積で両辺が共に`true`なら`true`，それ以外は`false`になる。
+
+`||`は論理和で両辺のうち少なくとも一方が`true`なら`true`，それ以外は`false`になる。
+
+```ruby
+condition = true
+another_condition = true
+if condition && another_condition
+  puts "Hello"
+else
+  puts "Bye"
+end
+puts "La la la"
+# Hello
+# La la la
+
+condition = true
+another_condition = false
+if condition && another_condition
+  puts "Hello"
+else
+  puts "Bye"
+end
+puts "La la la"
+# Bye
+# La la la
+
+condition = true
+another_condition = false
+if condition || another_condition
+  puts "this evaluated to true"
+else
+  puts "this evaluated to false"
+end
+puts "La la la"
+# this evaluated to true
+# La la la
+
+condition = false
+another_condition = false
+if condition || another_condition
+  puts "this evaluated to true"
+else
+  puts "this evaluated to false"
+end
+puts "La la la"
+# this evaluated to false
+# La la la
+```
+
+### 否定
+
+`!`は否定で`true`ならば`false`に，`false`ならば`true`になる。
+
+```ruby
+condition = false
+another_condition = false
+if !condition && !another_condition
+  puts "this evaluated to true"
+else
+  puts "this evaluated to false"
+end
+puts "La la la"
+# this evaluated to true
+# La la la
+
+condition = false
+another_condition = false
+if !condition || !another_condition
+  puts "this evaluated to true"
+else
+  puts "this evaluated to false"
+end
+puts "La la la"
+# this evaluated to true
+# La la la
+
+condition = false
+another_condition = false
+if !condition || another_condition
+  puts "this evaluated to true"
+else
+  puts "this evaluated to false"
+end
+puts "La la la"
+# this evaluated to true
+# La la la
+```
+
+### 複雑な条件
+
+複雑な条件は`(`，`)`でくくって表現する。
+
+```ruby
+condition = false
+another_condition = false
+if (!condition || another_condition) && 
+  puts "this evaluated to true"
+else
+  puts "this evaluated to false"
+end
+puts "La la la"
+# this evaluated to true
+# La la la
+```
+
+### `elsif`
+
+```ruby
+name = "Mashrur"
+
+if name == "Mashrur"
+  puts "Welcome to the program, Mashrur"
+elsif name == "Jack"
+  puts "Welcome to the program, Jack"
+else
+  puts "Welcome to the program, User"
+end
+# Welcome to the program, Mashrur
+
+name = "Jack"
+
+if name == "Mashrur"
+  puts "Welcome to the program, Mashrur"
+elsif name == "Jack"
+  puts "Welcome to the program, Jack"
+else
+  puts "Welcome to the program, User"
+end
+# Welcome to the program, Jack
+
+name = "Evgeny"
+
+if name == "Mashrur"
+  puts "Welcome to the program, Mashrur"
+elsif name == "Jack"
+  puts "Welcome to the program, Jack"
+elsif name == "Evgeny"
+  puts "Go back to helping students Evgeny"
+else
+  puts "Welcome to the program, User"
+end
+# Go back to helping students Evgeny
+```
