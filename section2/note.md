@@ -282,3 +282,20 @@ p new_first_name
 'Mashrur aske \'Hey John, how are you doing?\''
 # => => "Mashrur aske 'Hey John, how are you doing?'"
 ```
+
+
+## 16. Working with Strings part 2: Getting input from user
+
+### `gets`メソッドと`chomp`メソッド
+
+ユーザからの入力を標準入力から得るためには`gets`メソッドと`chomp`メソッドを使う。
+
+```ruby
+puts "What is your first name?"
+first_name = gets.chomp
+puts "Thank you, you said your first name is #{first_name}"
+
+puts "Enter a number to multiply by 2"
+input = gets.chomp
+puts input.to_i * 2
+```
