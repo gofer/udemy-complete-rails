@@ -406,3 +406,82 @@ puts "Enter the second number"
 num_2 = gets.chomp
 puts "The first number multiplied by the second number is #{num_1.to_i * num_2.to_i}"
 ```
+
+
+## 22. Brief look at comparsion operators
+
+### `==` / `!=`
+
+`==`は等価性をテストする演算子。
+つまり，左辺と右辺が等しいかを判定する。
+
+`!=`は等しくないことを判定する演算子。
+
+```ruby
+10 == 9
+# => false
+
+10 == 10
+# => true
+
+10 == "10".to_i
+# => true
+
+10 == "10".to_f
+# => true
+
+10 != 9
+# => true
+
+"hello" != "bye"
+# => true
+
+"hello" != "hello"
+# => false
+
+"hello" == "hello"
+# => true
+
+"" == " "
+# => false
+```
+
+
+### `<` / `>` / `<=` / `>=`
+
+`<` / `>` / `<=` / `>=`は大小比較演算子である。
+
+```ruby
+100 > 99
+# => true
+
+100 >= 100
+# => true
+
+100 >= 99
+# => true
+
+100 >= 101
+# => false
+
+100 <= 101
+# => true
+```
+
+### `eql?`メソッド
+
+`eql?`メソッドでは型も含めて等価性を判定する。
+
+```ruby
+10 == "10".to_f
+# => true
+
+10 == 10.0
+# => true
+
+10 === 10.0
+# => true
+
+10.eql?(10.0)
+# => false
+```
