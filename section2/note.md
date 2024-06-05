@@ -299,3 +299,110 @@ puts "Enter a number to multiply by 2"
 input = gets.chomp
 puts input.to_i * 2
 ```
+
+
+## 19. Working with numbers
+
+Rubyの算術演算は難しくない。
+
+```ruby
+puts 1 + 2
+# 3
+# => nil
+```
+
+### `Integer`と`Float`の割り算
+
+`Integer / Integer`とすると整数の範囲で割り算をする。
+
+```ruby
+10 / 2
+# => 5
+
+10 / 4
+# => 2
+
+10.0 / 4
+# => 2.5
+
+10 / 4.0
+# => 2.5
+
+10 / 4.to_f
+# => 2.5
+
+(10 / 4).to_f
+# => 2.0
+```
+
+
+### 文字列と掛け算
+
+`String * Intger`とすると文字列を回数分つなげ合わせた文字列になる。
+
+```ruby
+# "5" * "5"
+# => TypeError
+
+"5" * 2
+# => "55"
+
+# 2 * "5"
+# => TypeError
+
+puts "-" * 20
+# "--------------------"
+# => nil
+```
+
+
+### `times`メソッド
+
+`times`メソッドで回数分繰り返せる。
+
+```ruby
+20.times{print "-"}
+# --------------------=> 20
+```
+
+
+### `rand`メソッド
+`rand`メソッドは(0以上1未満の浮動小数点数)乱数を生成する。
+`rand(n)`で0以上`n`未満(`n`を含まない)の整数乱数を取得できる。
+
+```ruby
+20.times{ puts rand(10) }
+# 4
+# 2
+# ...
+# 7
+# => 20
+```
+
+
+### `to_i` / `to_f`メソッド
+
+文字列など整数以外に`to_i`メソッドを適用すると`0`が返る。
+同様に小数以外に`to_f`メソッドを適用すると`0.0`が返る。
+
+```ruby
+"hello".to_i
+# => 0
+
+"hello".to_f
+# => 0.0
+```
+
+
+### Simple calculator
+
+```ruby
+puts "Simple calculator"
+25.times{ print "-" }
+puts
+puts "Enter the first number"
+num_1 = gets.chomp
+puts "Enter the second number"
+num_2 = gets.chomp
+puts "The first number multiplied by the second number is #{num_1.to_i * num_2.to_i}"
+```
