@@ -1,6 +1,6 @@
 # Section2: The Ruby Programming Language
 
-## 13 Introduction to Section 2 and Ruby
+## 13. Introduction to Section 2 and Ruby
 
 - Ruby言語を扱う
 - Rubyは純粋なオブジェクト指向言語
@@ -103,4 +103,182 @@ end
 say_hello "Hello World Ruby is great!"
 
 # Hello World Ruby is great!
+```
+
+
+## 15. Working with Strings part 1
+
+- 文字列はテキストデータをRubyで表現する方法
+
+### 文字列
+
+文字列は`"`または`'`で囲むことで定義できる。
+`'`を使うと文字列の補間(interpolation)ができない。
+
+```ruby
+sentence = "My name is Marshrur"
+sentence = 'My name is Marshrur'
+p sentence
+
+# My name is Marshrur
+```
+
+
+### 文字列の結合
+
+```ruby
+first_name = "Mashrur"
+last_name = "Hossanin"
+
+puts first_name + last_name
+# MashrurHossanin
+
+puts first_name + " " + last_name
+# Mashrur Hossanin
+```
+
+
+### 文字列の補間
+
+`"`で囲まれた文字列中で`#{変数名}`とすることで変数を埋め込める。
+`'`で囲まれた文字列ではできない。
+
+```ruby
+first_name = "Mashrur"
+last_name = "Hossanin"
+
+puts "My first name is #{first_name} and my last name is #{last_name}"
+# My first name is Mashrurand my last name is Hossanin
+
+puts 'My first name is #{first_name} and my last name is #{last_name}'
+# My first name is #{first_name} and my last name is #{last_name}
+```
+
+
+### RubyのREPL
+
+`irb`コマンドでREPLが利用可能。
+
+```plain
+$ irb
+irb(main):001:0> first_name = "Mashrur"
+=> "Mashrur"
+irb(main):002:0> last_name = "Hossanin"
+=> "Hossanin"
+irb(main):003:0> full_name = first_name + " " + last_name
+=> "Mashrur Hossanin"
+irb(main):004:0> full_name
+=> "Mashrur Hossanin"
+irb(main):005:0> 
+```
+
+
+### 全てはクラスである
+
+インスタンスがもつ`class`メソッドでどのクラスから生成されたインスタンスかがわかる。
+Rubyではプリミティブ型もオブジェクトである。
+
+インスタンスのもつメソッドは`methods`メソッドで取得できる。
+
+2つのメソッドを連続して呼び出すことをメソッドチェーンと呼ぶ。
+(あまり続けすぎると読みづらい。)
+
+```ruby
+"Mashrur".class
+# => String
+
+10.class
+# => Integer
+
+10.0.class
+# => Float
+
+"Mashrur".methods
+# => [:unicode_normalized?, :encode!, ... , :equal? ]
+
+10.class
+# => Integer
+
+10.to_s.class
+# => String
+
+"Mashrur".length
+# => 7
+
+"Mashrur".reverse
+# => "rurhsaM"
+
+"Mashrur".capitalize
+# => "Mashrur"
+
+"Mashrur".empty?
+# => false
+
+"".empty?
+# => true
+```
+
+
+### `nil`の扱い
+
+`nil`の判定は`nil?`メソッドで行う。
+`nil?`が`true`となるのは`nil`のみである。
+
+```ruby
+"".empty?
+# => true
+
+"".nil?
+# => false
+
+nil.nil?
+# => true
+```
+
+
+### 文字列の置換
+
+```ruby
+sentence = "Welcome to the jungle"
+# => "Welcome to the jungle"
+
+sentence.sub("the jungle", "utopia")
+# => "Welcome to utopia"
+```
+
+
+### 変数と代入
+
+Rubyでは文字列は代入すると新たな領域で確保される。
+
+```ruby
+first_name = "Mashrur"
+
+new_first_name = first_name
+p new_first_name
+# => "Mashrur"
+
+first_name = "John"
+
+p new_first_name
+# => "Mashrur"
+```
+
+
+### エスケープシーケンス
+
+`\`で直後の特殊文字をエスケープできる。
+
+```ruby
+'the new first name is #{new_first_name}'
+# => "the new first name is \#{new_first_name}"
+
+"the new first name is \#{new_first_name}"
+# => "the new first name is \#{new_first_name}"
+
+'Mashrur aske 'Hey John, how are you doing?''
+# => Syntax Error
+
+'Mashrur aske \'Hey John, how are you doing?\''
+# => => "Mashrur aske 'Hey John, how are you doing?'"
 ```
