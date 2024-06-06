@@ -6,36 +6,37 @@ users = [
   { username: "heisenberg", password: "password5" }
 ]
 
+def auth_user(username, password, list_of_users)
+  list_of_users.each do |user_record|
+    if user_record[:username] == username && user_record[:password] == password
+      return user_record
+    end
+  end
+  "Credentials were not correct"
+end
+
 puts "Welcome to the authenticator"
 25.times { print "-" }
 puts
 puts "This program will take input from the user and compare password"
 puts "If password is correct, you will get back the user object"
 
-# We will learn
-# Hash, Array, Branching, While loops and designing program execution flow
-
-try_count = 0
-while try_count < 3
+attempts = 1
+while attempts < 4
   print "Username: "
   username = gets.chomp
+
   print "Password: "
   password = gets.chomp
 
-  finded_user = users.select {|user| user[:username] == username && user[:password] == password}
-  if finded_user.empty?
-    puts "Credentials were not correct"
-  else
-    p finded_user
-  end
+  authentication = auth_user(username, password, users)
+  puts authentication
 
-  try_count += 1
-  if try_count == 3
-    puts "You have exceeded the number attempts"
-    break
-  end
+  puts "Press n to quit or any other key to continue: "
+  input = gets.chomp.downcase
+  break if input == "n"
 
-  print "Press n to quit or any other key to continue:"
-  key = gets.chomp
-  break if key == "n"
+  attempts += 1
 end
+
+puts "You have exceeded the number of attempts" if attempts == 4
