@@ -1005,3 +1005,128 @@ z = (1..100).to_a.shuffle
 z.select {|number| number.odd?}
 # => [79, 85, 9, ... 65, 21]
 ```
+
+## 28. Hashes
+
+ハッシュはディクショナリ(辞書)とも呼ばれるデータ構造で，開発の場面でもよく見られる。
+
+Rubyのハッシュは`{`，`}`で囲み，その中にキーと値のペアを入れる。
+キーと値は`=>`で区切り，キーと値のペアは`,`で区切る。
+
+ハッシュとキーから値を取り出すためには，キーを`[`，`]`で囲んでハッシュ名の後ろに置く。
+
+```ruby
+sample_hash = {'a' => 1, 'b' => 2, 'c' => 3}
+# => {"a"=>1, "b"=>2, "c"=>3}
+
+sample_hash['b']
+# => 2
+
+my_details = {'name' => 'mashrur', 'favcolor' => 'red'}
+# => {"name"=>"mashrur", "favcolor"=>"red"
+
+my_details['favcolor']
+# => "red"
+```
+
+### シンボル
+
+Rubyのシンボルはアイデンティティ(識別子)となるもの。
+文字列(`String`)とは異なり，変更されることはない。
+
+記述方法が2通りある(`{key: value}`と`{:key => value}`)。
+
+```ruby
+another_hash = {a: 1, b: 2, c: 3}
+# => {:a=>1, :b=>2, :c=>3}
+
+another_hash[:a]
+# => 1
+```
+
+### `keys`メソッド / `values`メソッド
+
+`keys`メソッドでハッシュのキーのみの配列を得ることができる。
+
+`keyvaluess`メソッドでハッシュの値のみの配列を得ることができる。
+
+```ruby
+sample_hash = {'a' => 1, 'b' => 2, 'c' => 3}
+# => {"a"=>1, "b"=>2, "c"=>3}
+
+sample_hash.keys
+# => ["a", "b", "c"]
+
+sample_hash.values
+# => [1, 2, 3]
+```
+
+### ハッシュとイテレータ
+
+ハッシュに対して`each`メソッドを適用する場合は`|key, value|`としてキーと値の組を得ることができる。
+
+```ruby
+sample_hash = {'a' => 1, 'b' => 2, 'c' => 3}
+# => {"a"=>1, "b"=>2, "c"=>3}
+
+sample_hash.each do |key, value|
+  puts "The class for key is #{key.class} and the vlaue is #{value.class}"
+end
+# The class for key is String and the vlaue is Integer
+# The class for key is String and the vlaue is Integer
+# The class for key is String and the vlaue is Integer
+# => {"a"=>1, "b"=>2, "c"=>3}
+
+my_details = {'name' => 'mashrur', 'favcolor' => 'red'}
+# => {"name"=>"mashrur", "favcolor"=>"red"}
+
+my_details.each do |key, value|
+  puts "The class for key is #{key.class} and the vlaue is #{value.class}"
+end
+# The class for key is String and the vlaue is String
+# The class for key is String and the vlaue is String
+# => {"name"=>"mashrur", "favcolor"=>"red"}
+
+my_details = {:name => 'mashrur', :favcolor => 'red'}
+# => {:name=>"mashrur", :favcolor=>"red"}
+
+my_details.each do |key, value|
+  puts "The class for key is #{key.class} and the vlaue is #{value.class}"
+end
+# The class for key is Symbol and the vlaue is String
+# The class for key is Symbol and the vlaue is String
+# => {:name=>"mashrur", :favcolor=>"red"}
+```
+
+### 要素の追加・変更
+
+```ruby
+myhash = {a: 1, b: 2, c: 3, d: 4}
+# => {:a=>1, :b=>2, :c=>3, :d=>4}
+
+myhash[:e] = "Mashrur"
+# => "Mashrur"
+
+myhash
+# => {:a=>1, :b=>2, :c=>3, :d=>4, :e=>"Mashrur"}
+
+myhash[:c] = "Ruby"
+# => "Ruby"
+
+myhash
+# => {:a=>1, :b=>2, :c=>"Ruby", :d=>4, :e=>"Mashrur"}
+
+myhash.each {|some_key, some_value| puts "The class for key is #{some_key} and the vlaue is #{some_value}"}
+# The class for key is a and the vlaue is 1
+# The class for key is b and the vlaue is 2
+# The class for key is c and the vlaue is Ruby
+# The class for key is d and the vlaue is 4
+# The class for key is e and the vlaue is Mashrur
+# => {:a=>1, :b=>2, :c=>"Ruby", :d=>4, :e=>"Mashrur"}
+
+myhash.select {|k, v| v.is_a?(String)}
+# => {:c=>"Ruby", :e=>"Mashrur"}
+
+myhash.each {|k, v| myhash.delete(k) if v.is_a?(String)}
+# => {:a=>1, :b=>2, :d=>4}
+```
