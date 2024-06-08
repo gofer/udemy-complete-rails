@@ -1160,3 +1160,57 @@ camelCase
 class SomeClass
 end
 ```
+
+## 40. Introduction to Object Oriented Programming
+
+オブジェクト指向プログラミングとはオブジェクトとその相互作用を利用してアプリケーションを設計し実装するようなプログラミングパラダイムである。
+
+プログラミングでオブジェクトを考えることは，物を考えることと同じ。
+- 物 ←→ オブジェクト (クラスという設計図から作られる)
+  - 物の特徴 ←→ オブジェクトの属性 (クラスで指定される)
+
+1. 生徒というクラスには姓や名，メールアドレスなどの属性がある。
+1. コースというクラスにはコースIDや名前などの属性がある。
+
+Rubyでクラスを作るためには`class`キーワードを用いて大文字から始まるクラス名を続ける。
+
+クラスから作られた実態はインスタンスと呼ばれる。
+インスタンスの属性はインスタンス変数と呼ばれ`@`から始める。
+
+```ruby
+# student.rb
+class Student
+  @first_name
+  @last_name
+  @email
+  @username
+  @password
+end
+
+mashrur = Student.new
+
+puts mashrur
+# => #<Student:0x00007f128862bdc0>
+```
+
+インスタンスを`puts`メソッドで表示する際は，クラスの`to_s`メソッドが自動的に呼ばれる。
+
+```ruby
+# student.rb
+class Student
+  @first_name
+  @last_name
+  @email
+  @username
+  @password
+
+  def to_s
+    "First name: #{@first_name}"
+  end
+end
+
+mashrur = Student.new
+
+puts mashrur
+# First name: 
+```
