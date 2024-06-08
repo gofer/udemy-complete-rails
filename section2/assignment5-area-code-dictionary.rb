@@ -28,9 +28,13 @@ loop do
   answer = gets.chomp.downcase
   break if answer != "y"
 
-  puts "Which city do you want the area code for?"
-  get_city_names(dial_book).each { |city_name| puts city_name }
-  city = gets.chomp.downcase
-  area_code = get_area_code(dial_book, city)
-  puts "The area cide for #{city} is #{area_code}"
+  puts "Which city do you want to lookup the area code for?"
+  puts get_city_names(dial_book)
+  puts "Enter your selection"
+  prompt = gets.chomp.downcase
+  if dial_book.include?(prompt)
+    puts "The area code for #{prompt} is #{get_area_code(dial_book, prompt)}"
+  else
+    puts "You entered an invalid city name"
+  end
 end
