@@ -1130,3 +1130,33 @@ myhash.select {|k, v| v.is_a?(String)}
 myhash.each {|k, v| myhash.delete(k) if v.is_a?(String)}
 # => {:a=>1, :b=>2, :d=>4}
 ```
+
+## 33. Ruby Style Guide
+
+RubyとRailsにおけるスタイルについて。
+- スネークケース
+  - メソッド名や変数名に使われる。
+- キャメルケース
+  - クラス名に使われる。
+  - クラス名は最初の文字が大文字でなければならない。
+
+インデントは2つのスペースでいれる。
+
+参考: [Rubocopのスタイルガイド](https://github.com/fortissimo1997/ruby-style-guide/blob/japanese/README.ja.md)
+
+```ruby
+this_is_snake_case
+
+also_snake_case
+
+def my_name_is
+  # and my code is here
+end
+
+CamelCase
+
+camelCase
+
+class SomeClass
+end
+```
