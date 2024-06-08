@@ -1214,3 +1214,177 @@ mashrur = Student.new
 puts mashrur
 # First name: 
 ```
+
+## 42. Attributes, getters and stters
+
+インスタンス変数を定義するだけではインスタンス変数にアクセスできない。
+
+```ruby
+class Student
+  @first_name
+  @last_name
+  @email
+  @username
+  @password
+
+  def to_s
+    "First name: #{@first_name}"
+  end
+end
+
+mashrur = Student.new
+
+puts mashrur
+# First name:
+
+mashrur.first_name = "Mashrur"
+# => NoMethodError
+```
+
+`変数名=`のメソッドを定義することで，インスタンス変数へ代入できる (setter)。
+
+```ruby
+class Student
+  @first_name
+  @last_name
+  @email
+  @username
+  @password
+
+  def first_name=(name)
+    @first_name = name
+  end
+
+  def to_s
+    "First name: #{@first_name}"
+  end
+end
+
+mashrur = Student.new
+
+mashrur.first_name = "Mashrur"
+
+puts mashrur
+# First name: Mashrur
+```
+
+さらに`変数名`のメソッドを定義することで，値を参照できる (getter)。
+
+```ruby
+class Student
+  @first_name
+  @last_name
+  @email
+  @username
+  @password
+
+  def first_name=(name)
+    @first_name = name
+  end
+
+  def first_name
+    @first_name
+  end
+
+  def to_s
+    "First name: #{@first_name}"
+  end
+end
+
+mashrur = Student.new
+
+mashrur.first_name = "Mashrur"
+
+puts mashrur.first_name
+# Mashrur
+```
+
+getterやsetterは記述すると冗長なので，簡単に記述できる属性がある。
+
+- `attr_accessor`はgetter / setterを両方実装する。
+- `attr_reader`はgetterのみ実装する。
+
+```ruby
+class Student
+  attr_accessor :first_name, :last_name, :email
+  attr_reader :username
+
+  @first_name
+  @last_name
+  @email
+  @username
+  @password
+
+  def set_username
+    @username = "mashrur1"
+  end
+
+  def to_s
+    "First name: #{@first_name}"
+  end
+end
+
+mashrur = Student.new
+
+mashrur.first_name = "Mashrur"
+
+mashrur.last_name = "Hossain"
+
+mashrur.email = "mashrur@example.com"
+
+# mashrur.username = "mashrur1"
+mashrur.set_username
+
+puts mashrur.first_name
+# Mashrur
+
+puts mashrur.last_name
+# Hossain
+
+puts mashrur.email
+# mashrur@example.com
+
+puts mashrur.username
+# mashrur1
+```
+
+`initialize`メソッドは`new`を呼び出したときに実行される (コンストラクタ)。
+
+```ruby
+class Student
+  attr_accessor :first_name, :last_name, :email
+  attr_reader :username
+
+  @first_name
+  @last_name
+  @email
+  @username
+  @password
+
+  def initialize(firstname, lastname, email, username, password)
+    @first_name = firstname
+    @last_name = lastname
+    @email = email
+    @username = username
+    @password = password
+  end
+
+  def to_s
+    "First name: #{@first_name}"
+  end
+end
+
+mashrur = Student.new("Mashrur", "Hossain", "mashrur@example.com", "mashrur1", "password1")
+
+puts mashrur.first_name
+# Mashrur
+
+puts mashrur.last_name
+# Hossain
+
+puts mashrur.email
+# mashrur@example.com
+
+puts mashrur.username
+# mashrur1
+```
