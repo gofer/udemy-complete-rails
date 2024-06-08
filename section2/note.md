@@ -1388,3 +1388,28 @@ puts mashrur.email
 puts mashrur.username
 # mashrur1
 ```
+
+## 44. Final Ruby project: Classes, Modules, Mixins - 1 - bcrypt
+
+`Student`クラスをWebアプリケーションの認証システムに利用することを考える。
+- パスワードを平文で保存するのは非常に危険であるため，ハッシュ化して保存する。
+- 今人気のハッシュアルゴリズムはMD5であり，ソルトを追加したbcryptがパスワードのハッシュ化によく用いられる。
+  - `bcrypt`というgemがある。
+
+    ```ruby
+    require 'bcrypt'
+
+    my_password = BCrypt::Password.create("my password")
+
+    my_password.version
+    # => 2a
+
+    my_password.cost
+    # => 12
+
+    my_password == "my password"
+    # => true
+
+    my_password == "not my password"
+    # => false
+    ```
