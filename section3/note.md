@@ -112,3 +112,131 @@ Rails 6に基づくRailsアプリケーションの構造
     ```erb
     Hello World!
     ```
+
+## 60. Structure of a Rails application
+
+Rails 6のその他のファイルやフォルダーについて
+
+- `app`
+  - `assets`
+
+      画像(`images`)やスタイルシート(`stylesheets`)などの静的アセットを格納するフォルダー (`app/views`以下などから参照する)
+  - `channels`
+
+    リアルタイム通信のためのActionCableのためのフォルダー
+  - `controllers`
+
+    コントローラーを格納するフォルダー
+
+    `application_controller.rb`にある`ApplicationController`は`ActionController::Base`を継承
+
+      - `app/controllers/application_controller.rb`
+        ```ruby
+        class ApplicationController < ActionController::Base
+          # ...
+        end
+        ```
+
+    さらに，各コントローラーは`ApplicationController`を継承している
+
+      - `app/controllers/pages_controller.rb`
+        ```ruby
+        class PagesController < ApplicationController
+          # ...
+        end
+        ```
+  - `helpers`
+
+      ヘルパー関数を格納するフォルダー (ビューテンプレートで利用する)
+  - `javascript`
+      古いバージョンでは`assets`以下にあったが，Rails 6以降ではWebpackにより処理される
+      - `packs/application.js`
+
+        JavaScriptのマニフェストファイル
+  - `models`
+
+    モデルを格納するフォルダー
+
+    `application_record.rb`にある`ApplicationRecord`は`ActiveRecord::Base`を継承
+    - `app/models/application_record.rb`
+      ```ruby
+      class ApplicationRecord < ActiveRecord::Base
+        # ...
+      end
+      ```
+    
+    さらに，各モデルは`ApplicationRecord`を継承
+    - `app/models/stock.rb`
+      ```ruby
+      class Stock < ApplicationRecord
+        # ...
+      end
+      ```
+  - `views`
+    
+    ビューのテンプレートファイルを格納するフォルダー
+
+    - `layouts`
+      
+      レイアウトになるテンプレートファイルを格納する
+      
+      `<%= yield %>`に本文が埋め込まれる
+
+      - `app/views/layouts/application.html.erb`
+        ```erb
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>TestApp6</title>
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <%= csrf_meta_tags %>
+            <%= csp_meta_tag %>
+
+            <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+            <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+          </head>
+
+          <body>
+            <%= yield %>
+          </body>
+        </html>
+        ```
+- `bin`
+
+  バイナリ実行可能ファイルを格納
+- `config`
+
+  アプリケーションの設定を格納するフォルダー
+
+  - `environments`
+
+    環境 (開発・本番など) ごとの設定を定義する
+
+  - `routes.rb`
+
+    アプリケーションのルーティングを設定する
+
+    - `config/routes.rb`
+      ```ruby
+      Rails.application.routes.draw do
+        # ...
+      end
+      ```
+- `db`
+
+  開発用・テスト用のデータベース関連ファイルを格納するフォルダー
+
+  開発時・テスト時にはSQLiteを利用することが多い
+
+  マイグレーションファイルもこのフォルダーに格納される
+- `Gemfile` / `Gemfile.lock`
+  
+  Railsアプリケーションの依存関係にあたるgemを記述する
+- `package.json`
+
+  yarnを利用してJavaScriptの依存関係を記述・インストールする
+- `README.md`
+
+  READMEを記述する
+
+  GitHubなどの公開レポジトリではサイト上にこれが表示される
