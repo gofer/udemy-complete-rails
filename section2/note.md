@@ -1540,7 +1540,6 @@ Rubyでは`module`キーワードでモジュールを定義できる。
   1. `require_relative`を用いる
   1. `$LOAD_PATH`へディレクトリへの相対パスを追加し`require`する
 
-
 - `crud.rb`
     ```ruby
     module Crud
@@ -1572,7 +1571,6 @@ Rubyでは`module`キーワードでモジュールを定義できる。
       end
     end
     ```
-
 - `main.rb`
     ```ruby
     require_relative 'crud'
@@ -1590,3 +1588,10 @@ Rubyでは`module`キーワードでモジュールを定義できる。
 
     hashed_user =  Crud.create_secure_users(users)
     ```
+
+## 50. `self` notation for method names
+
+モジュールでメソッドを定義する際は識別子に`self.`を前置する。
+
+クラスでは`self.`を前置したメソッドをクラスメソッドと呼ぶ。
+クラスメソッドは呼び出すためにインスタンスを生成する必要がない。
