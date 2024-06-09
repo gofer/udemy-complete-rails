@@ -1413,3 +1413,75 @@ puts mashrur.username
     my_password == "not my password"
     # => false
     ```
+
+## 46. Final Ruby project: Classes, Modules, Mixins - 2 - methods
+
+`BCrypt::Password.create`メソッドでハッシュ化されたパスワードを生成できる。
+
+同じパスワードでも，ハッシュ化された結果は異なる (`==`で比較しても`false`になる)。
+
+```ruby
+require 'bcrypt'
+
+# my_password = BCrypt::Password.create("my password")
+# puts my_password
+# => $2a$12$ggov39INEPTuKAMzZscRleoAaiDCeiTdaUdp3KFgbyOXEZvsL0JvW
+
+my_password = BCrypt::Password.new("$2a$12$ggov39INEPTuKAMzZscRleoAaiDCeiTdaUdp3KFgbyOXEZvsL0JvW")
+my_password == "my password"
+# true
+
+my_password_1 = BCrypt::Password.create("my password")
+my_password_2 = BCrypt::Password.create("my password")
+
+puts my_password_1
+# $2a$12$Sm8.5EbiAp/rMb6sDPZ0Ru83OH9JtFAxsnypsRmyH3sLC/8zp6cne
+
+puts my_password_2
+# $2a$12$bnKHc2NmaYOS0.WYGhIrsOscj67HQx.To37EsJFwd0VM8vFf.5M9i
+
+p my_password == my_password_1
+# false
+
+p my_password_1 == "my password"
+# true
+```
+
+authenticatorプロジェクトに組み込んでみる。
+
+```ruby
+require 'bcrypt'
+
+users = [
+  { username: "mashrur",    password: "password1" },
+  { username: "jack",       password: "password2" },
+  { username: "arya",       password: "password3" },
+  { username: "jonshow",    password: "password4" },
+  { username: "heisenberg", password: "password5" }
+]
+
+def create_hash_digest(password)
+  BCrypt::Password.create(password)
+end
+
+def verify_hash_digest(password)
+  BCrypt::Password.new(password)
+end
+
+def create_secure_users(list_of_users)
+  list_of_users.each do |user_record|
+    user_record[:password] = create_hash_digest(user_record[:password])
+  end
+  list_of_users
+end
+
+new_password = create_hash_digest("password1")
+
+puts new_password == "password2"
+# false
+
+puts create_secure_users(users)
+# {:username=>"mashrur", :password=>"$2a$12$aFkF2ipq2zDiNoP2/5wcn.ds311rDKYP.XUMYzK2IgewGLZByE97G"}
+# ...
+# {:username=>"heisenberg", :password=>"$2a$12$leAnVEQrJkClu4t3Md5AROvJ7zvRS9SU.yMv5Cq/7v1aUYVDhKM/i"}
+```
