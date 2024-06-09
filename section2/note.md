@@ -1485,3 +1485,108 @@ puts create_secure_users(users)
 # ...
 # {:username=>"heisenberg", :password=>"$2a$12$leAnVEQrJkClu4t3Md5AROvJ7zvRS9SU.yMv5Cq/7v1aUYVDhKM/i"}
 ```
+
+## 48. Final Ruby project: Classes, Modules, Mixins - 3 - modules
+
+```ruby
+require 'bcrypt'
+
+users = [
+  { username: "mashrur",    password: "password1" },
+  { username: "jack",       password: "password2" },
+  { username: "arya",       password: "password3" },
+  { username: "jonshow",    password: "password4" },
+  { username: "heisenberg", password: "password5" }
+]
+
+def create_hash_digest(password)
+  BCrypt::Password.create(password)
+end
+
+def verify_hash_digest(password)
+  BCrypt::Password.new(password)
+end
+
+def create_secure_users(list_of_users)
+  list_of_users.each do |user_record|
+    user_record[:password] = create_hash_digest(user_record[:password])
+  end
+  list_of_users
+end
+
+new_users = create_secure_users(users)
+# puts new_users
+
+def authenticate_user(username, password, list_of_users)
+  list_of_users.each do |user_record|
+    if user_record[:username] == username && verify_hash_digest(user_record[:password]) == password
+      return user_record
+    end
+  end
+  "Credentials wew not correct"
+end
+
+puts authenticate_user("heisenberg", "password5", new_users)
+puts authenticate_user("heisenberg", "password6", new_users)
+```
+
+モジュールを使うとメソッドをまとめて部品化できる。
+
+Rubyでは`module`キーワードでモジュールを定義できる。
+メソッドは`self.`に識別子を続けて定義する。
+
+ローカルのファイルを読み出すためには2つの方法がある。
+
+  1. `require_relative`を用いる
+  1. `$LOAD_PATH`へディレクトリへの相対パスを追加し`require`する
+
+
+- `crud.rb`
+    ```ruby
+    module Crud
+      require 'bcrypt'
+      puts "Module CRUD activated"
+
+      def self.create_hash_digest(password)
+        BCrypt::Password.create(password)
+      end
+
+      def self.verify_hash_digest(password)
+        BCrypt::Password.new(password)
+      end
+
+      def self.create_secure_users(list_of_users)
+        list_of_users.each do |user_record|
+          user_record[:password] = self.create_hash_digest(user_record[:password])
+        end
+        list_of_users
+      end
+
+      def self.authenticate_user(username, password, list_of_users)
+        list_of_users.each do |user_record|
+          if user_record[:username] == username && self.verify_hash_digest(user_record[:password]) == password
+            return user_record
+          end
+        end
+        "Credentials wew not correct"
+      end
+    end
+    ```
+
+- `main.rb`
+    ```ruby
+    require_relative 'crud'
+
+    # $LOAD_PATH << "."
+    # require 'crud'
+
+    users = [
+      { username: "mashrur",    password: "password1" },
+      { username: "jack",       password: "password2" },
+      { username: "arya",       password: "password3" },
+      { username: "jonshow",    password: "password4" },
+      { username: "heisenberg", password: "password5" }
+    ]
+
+    hashed_user =  Crud.create_secure_users(users)
+    ```
