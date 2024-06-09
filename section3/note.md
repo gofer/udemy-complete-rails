@@ -281,3 +281,19 @@ Rails 6のその他のファイルやフォルダーについて
     `git status`で現在の状態を確認できる
 
 ## 64. Setup online code repository with GitHub
+
+## 66. Front-end: Learn and practice HTML and CSS
+
+- HTMLタグとは何か
+  - `h1` / `p`など
+- CSSを用いてidやclassを用いてスタイルを適用する
+- インラインと外部ファイルによるCSSの違い
+- 基本的なフォームやテーブルの作り方
+
+MDNのドキュメントを読む
+- [ウェブ入門 - ウェブ開発を学ぶ | MDN](https://developer.mozilla.org/ja/docs/Learn/Getting_started_with_the_web)
+- [HTML の基本 - ウェブ開発を学ぶ | MDN](https://developer.mozilla.org/ja/docs/Learn/Getting_started_with_the_web/HTML_basics)
+- [CSS の基本 - ウェブ開発を学ぶ | MDN](https://developer.mozilla.org/ja/docs/Learn/Getting_started_with_the_web/CSS_basics)
+
+良いチュートリアル
+- [Learn to Code HTML & CSS - Beginner & Advanced](https://learn.shayhowe.com)
