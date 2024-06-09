@@ -327,3 +327,10 @@ MDNのドキュメントを読む
     ```erb
     <h1>This is the About page</h1>
     ```
+
+## 70. Production Deploy!
+
+herokuを用いた本番環境へのデプロイ
+
+本番環境ではsqliteではなくPostgreSQLなど利用する。
+
