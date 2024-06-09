@@ -279,3 +279,5 @@ Rails 6のその他のファイルやフォルダーについて
     Gitのコミットは`git commit -m "{コミットメッセージ}"`で行う
 
     `git status`で現在の状態を確認できる
+
+## 64. Setup online code repository with GitHub
