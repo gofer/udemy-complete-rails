@@ -297,3 +297,33 @@ MDNのドキュメントを読む
 
 良いチュートリアル
 - [Learn to Code HTML & CSS - Beginner & Advanced](https://learn.shayhowe.com)
+
+## 68. Add About page and homework assignment
+
+`/about`にAboutページを表示させる
+
+`config/routes.rb`でGETメソッドに対応するルートを定義するには`get`を用いる
+
+`get {ルート}, to: '{コントローラー名}#{アクション名}'`で定義する
+
+- `config/routes.rb`
+    ```ruby
+    Rails.application.routes.draw do
+      root 'pages#home'
+      get 'about', to: 'pages#about'
+    end
+    ```
+- `app/controller/pages_controller.rb`
+    ```ruby
+    class PagesController < ApplicationController
+      def home
+      end
+
+      def about
+      end
+    end
+    ```
+- `app/views/pages/about.html.erb`
+    ```erb
+    <h1>This is the About page</h1>
+    ```
