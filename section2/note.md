@@ -1595,3 +1595,140 @@ Rubyでは`module`キーワードでモジュールを定義できる。
 
 クラスでは`self.`を前置したメソッドをクラスメソッドと呼ぶ。
 クラスメソッドは呼び出すためにインスタンスを生成する必要がない。
+
+## 51. Final Ruby project: Classes, Modules, Mixins - 4 - include
+
+`Student`クラスと`Crud`モジュールを組み合わせる。
+
+- `crud.rb`
+    ```ruby
+    module Crud
+      require 'bcrypt'
+      puts "Module CRUD activated"
+
+      def self.create_hash_digest(password)
+        BCrypt::Password.create(password)
+      end
+
+      def self.verify_hash_digest(password)
+        BCrypt::Password.new(password)
+      end
+
+      def self.create_secure_users(list_of_users)
+        list_of_users.each do |user_record|
+          user_record[:password] = self.create_hash_digest(user_record[:password])
+        end
+        list_of_users
+      end
+
+      def self.authenticate_user(username, password, list_of_users)
+        list_of_users.each do |user_record|
+          if user_record[:username] == username && self.verify_hash_digest(user_record[:password]) == password
+            return user_record
+          end
+        end
+        "Credentials wew not correct"
+      end
+    end
+    ```
+- `student.rb`
+    ```ruby
+    require_relative 'crud'
+
+    class Student
+      attr_accessor :first_name, :last_name, :email, :username, :password
+
+      @first_name
+      @last_name
+      @email
+      @username
+      @password
+
+      def initialize(firstname, lastname, email, username, password)
+        @first_name = firstname
+        @last_name = lastname
+        @email = email
+        @username = username
+        @password = password
+      end
+
+      def to_s
+        "First name: #{@first_name}, Last name: #{@last_name}, Email address: #{@email}, Username: #{@username}"
+      end
+    end
+
+    mashrur = Student.new("Mashrur", "Hossain", "mashrur@example.com", "mashrur1", "password1")
+    # => #<Student:0x00007fdbd9863fa0 @first_name="Mashrur", @last_name="Hossain", @email="mashrur@example.com", @username="mashrur1", @password="password1">
+
+    hashed_password = Crud.create_hash_digest(mashrur.password)
+    # => "$2a$12$tUbn1jLhqjlQqAj7jLC.2.2iwCx7blLbEngEL5utoFveicYEuvy6q"
+    ```
+
+さらに，`include`を使って`Crud`モジュールを`Student`クラスにmix-inする。
+
+mix-inをすると，モジュールの再実装の必要がなくなる。
+
+- `crud.rb`
+    ```ruby
+    module Crud
+      require 'bcrypt'
+
+      def create_hash_digest(password)
+        BCrypt::Password.create(password)
+      end
+
+      def verify_hash_digest(password)
+        BCrypt::Password.new(password)
+      end
+
+      def create_secure_users(list_of_users)
+        list_of_users.each do |user_record|
+          user_record[:password] = create_hash_digest(user_record[:password])
+        end
+        list_of_users
+      end
+
+      def authenticate_user(username, password, list_of_users)
+        list_of_users.each do |user_record|
+          if user_record[:username] == username && verify_hash_digest(user_record[:password]) == password
+            return user_record
+          end
+        end
+        "Credentials wew not correct"
+      end
+    end
+    ```
+- `student.rb`
+    ```ruby
+    require_relative 'crud'
+
+    class Student
+      include Crud
+
+      attr_accessor :first_name, :last_name, :email, :username, :password
+
+      @first_name
+      @last_name
+      @email
+      @username
+      @password
+
+      def initialize(firstname, lastname, email, username, password)
+        @first_name = firstname
+        @last_name = lastname
+        @email = email
+        @username = username
+        @password = password
+      end
+
+      def to_s
+        "First name: #{@first_name}, Last name: #{@last_name}, Email address: #{@email}, Username: #{@username}"
+      end
+    end
+
+    mashrur = Student.new("Mashrur", "Hossain", "mashrur@example.com", "mashrur1", "password1")
+    # => #<Student:0x00007fb7e3d6bf30 @first_name="Mashrur", @last_name="Hossain", @email="mashrur@example.com", @username="mashrur1", @password="password1">
+
+    hashed_password = mashrur.create_hash_digest(mashrur.password)
+    # => "$2a$12$8zPxWKrKOodg79OuR3Zuo./H1v0wl8.dl2KSfB/GM7eLyBjPgpg3C"
+    ```
