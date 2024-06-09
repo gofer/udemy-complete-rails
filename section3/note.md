@@ -334,3 +334,38 @@ herokuを用いた本番環境へのデプロイ
 
 本番環境ではsqliteではなくPostgreSQLなど利用する。
 
+## 72. The back-end: Database and tables in Rails
+
+- データベースは通常複数のテーブルで構成されている
+  - テーブルはExcelのスプレッドシートのようなもの
+  - テーブルは共通の情報をもつ列を利用して他のテーブルとリンクできる
+
+    以下の例では`users`の`id`と`articles`の`user_id`で対応付けている
+
+    - `users`
+      | id | name | email | password |
+      |:--:|------|-------|----------|
+      | 1 |  |  |  |
+      | **2** |  |  |  |
+      | 3 |  |  |  |
+      | 4 |  |  |  |
+    - `articles`
+      | id | title | description | user_id |
+      |:--:|-------|-------------|:-------:|
+      | 1 | first article | description of first article | **2** |
+      | 2 | second article | desciption of second | **2** |
+      | 3 | some fun article | this article is a lot of fun | 1 |
+      | 4 | programming | programming is alot of fun | 3 |
+- データベースに対する処理; CRUD
+  - C; Create articles
+  - R; Read articles
+  - U; Update articles
+  - D; Delete articles
+- データベースへのクエリを表現する言語; SQL (Structured Query Langeuage)
+  - データベース管理システムには若干違いがある
+  - Microsoft SQL Server / PostgreSQL / Oracleなど
+- RailsではActive RecordというORM(Object Relational Mapper)を利用する
+  - Railsアプリケーションとデータベースの橋渡し役
+  - 基本的に直接SQLを記述する必要はない
+  - Active RecordはActive Recordパターンと呼ばれるデザインパターンをRailsように実装したもの
+- これらがRailsのモデル層を構成する
