@@ -369,3 +369,35 @@ herokuを用いた本番環境へのデプロイ
   - 基本的に直接SQLを記述する必要はない
   - Active RecordはActive Recordパターンと呼ばれるデザインパターンをRailsように実装したもの
 - これらがRailsのモデル層を構成する
+
+## 73. The back-end: CRUD, scaffold and warp-up section 3
+
+- `rails generate scaffold`コマンドでリソース周りのコードを一括で生成できる
+  - `rails generate scaffold {モデル名} [{カラム名}:{型} ...]`
+  - 型は`string`や`text`など
+
+- マイグレーションファイル
+  - `db/migrate/yyyymmddhhmss_create_articles.rb`
+    ```ruby
+    class CreateArticles < ActiveRecord::Migration[6.1]
+      def change
+        create_table :articles do |t|
+          t.string :title
+          t.text :description
+
+          t.timestamps
+        end
+      end
+    end
+    ```
+    - `t.timestamps`は`created_at`と`updated_at`のタイムスタンプを生成する
+ - マイグレーションは`rails db:migrate`で行う
+   - `db/schema.rb`が更新される
+- モデルは`app/models/{モデル名}.rb`
+  - モデル名は単数形
+- コントローラーは`app/controllers/{モデル名}_controller.rb`
+  - モデル名は複数形
+- ルーティング定義は`config/routes.rb`に追記
+  - `resources :{モデル名}`
+  - モデル名は複数形
+  - `rails routes --expanded`で詳細表示
