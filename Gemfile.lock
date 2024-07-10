@@ -71,6 +71,8 @@ GEM
       activesupport (>= 6.1)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
+    language_server-protocol (3.17.0.3)
+    logger (1.6.0)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -106,6 +108,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
+    prism (0.30.0)
     racc (1.8.0)
     rack (2.2.9)
     rack-test (2.1.0)
@@ -139,6 +142,14 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0)
     rake (13.2.1)
+    rbs (3.5.2)
+      logger
+    ruby-lsp (0.17.5)
+      language_server-protocol (~> 3.17.0)
+      prism (>= 0.29.0, < 0.31)
+      rbs (>= 3, < 4)
+      sorbet-runtime (>= 0.5.10782)
+    sorbet-runtime (0.5.11478)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
       rack (>= 2.2.4, < 4)
@@ -166,6 +177,7 @@ PLATFORMS
 DEPENDENCIES
   bootsnap (>= 1.4.4)
   rails (~> 6.0)
+  ruby-lsp
 
 BUNDLED WITH
    2.5.11
