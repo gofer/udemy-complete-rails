@@ -306,3 +306,119 @@
   #   created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
   #   updated_at: Thu, 11 Jul 2024 23:14:48.035293000 JST +09:00>]
   ```
+
+## 82. Validations
+
+- バリデーション
+  - `app/models/article.rb`
+    ```ruby
+    class Article < ApplicationRecord
+      validates :title, presence: true
+    end
+    ```
+  - `rails c`
+    ```ruby
+    # アプリケーションを変更したらコンソールでもリロードする
+    reload!
+    # Reloading...
+    # => true
+
+    article = Article.new
+    # (0.1ms)  SELECT sqlite_version(*)
+    # => #<Article:0x00007f569847f9c8
+
+    article.save
+    # => false
+
+    article.errors
+    # => #<ActiveModel::Errors:0x00007f5692957870
+    #  @base=
+    #   #<Article:0x00007f569847f9c8
+    #    id: nil,
+    #    title: nil,
+    #    description: nil,
+    #    created_at: nil,
+    #    updated_at: nil>,
+    #  @errors=[#<ActiveModel::Error attribute=title, type=blank, options={}>]>
+
+    article.errors.full_messages
+    # => ["Title can't be blank"]
+    ```
+
+  - `app/models/article.rb`
+    ```ruby
+    class Article < ApplicationRecord
+      validates :title, presence: true
+      validates :description, presence: true
+    end
+    ```
+  - `rails c`
+    ```ruby
+    reload!
+    # Reloading...
+    # => true
+
+    article = Article.new
+    # (0.1ms)  SELECT sqlite_version(*)
+    # => #<Article:0x00007f5698602200
+
+    article.save
+    # => false
+
+    article.errors.full_messages
+    # => ["Title can't be blank", "Description can't be blank"]
+
+    article.title = 'test article'
+    # => "test article"
+
+    article.save
+    # => false
+
+    article.errors.full_messages
+    # => ["Description can't be blank"]
+
+    article.description = 'Test description'
+    # => "Test description"
+
+    article.save
+    # TRANSACTION (0.1ms)  begin transaction
+    # Article Create (0.4ms)  INSERT INTO "articles" ("title", "description", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["title", "test article"], ["description", "Test description"], ["created_at", "2024-07-11 14:28:35.578058"], ["updated_at", "2024-07-11 14:28:35.578058"]]
+    # TRANSACTION (14.1ms)  commit transaction
+    # => true
+    ```
+
+  - `app/models/article.rb`
+    ```ruby
+    class Article < ApplicationRecord
+      validates :title, presence: true, length: { minimum: 6, maximum: 100 }
+      validates :description, presence: true, length: { minimum: 10, maximum: 300 }
+    end
+    ```
+  - `rails c`
+    ```ruby
+    reload!
+    # Reloading...
+    # => true
+
+    article = Article.new(title: 'a', description: 'b')
+    # (0.1ms)  SELECT sqlite_version(*)
+    # => #<Article:0x00007f569285d5a0
+
+    article.save
+    # => false
+
+    article.errors.full_messages
+    # => ["Title is too short (minimum is 6 characters)", "Description is too short (minimum is 10 characters)"]
+
+    article.title = 'this should pass validation'
+    # => "this should pass validation"
+
+    article.description = 'edited article description'
+    # => "edited article description"
+
+    article.save
+    # TRANSACTION (0.1ms)  begin transaction
+    # Article Create (0.4ms)  INSERT INTO "articles" ("title", "description", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["title", "this should pass validation"], ["description", "edited article description"], ["created_at", "2024-07-11 14:33:08.780853"], ["updated_at", "2024-07-11 14:33:08.780853"]]
+    # TRANSACTION (17.2ms)  commit transaction
+    # => true
+    ```
