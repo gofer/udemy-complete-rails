@@ -145,3 +145,164 @@
 
   exit
   ```
+
+## 80. CRUD operations from rails console
+
+- RailsコンソールでのCRUD処理
+  ```ruby
+  Article.all
+  # (0.4ms)  SELECT sqlite_version(*)
+  # Article Load (0.2ms)  SELECT "articles".* FROM "articles"
+  # => [#<Article:0x00007f56928dd958
+  #   id: 1,
+  #   title: "first article",
+  #   description: "description of first article",
+  #   created_at: Thu, 11 Jul 2024 22:50:59.929388000 JST +09:00,
+  #   updated_at: Thu, 11 Jul 2024 22:50:59.929388000 JST +09:00>,
+  #  #<Article:0x00007f569289f8d8
+  #   id: 2,
+  #   title: "second article",
+  #   description: "description of second article",
+  #   created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
+  #   updated_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00>,
+  #  #<Article:0x00007f569289f810
+  #   id: 3,
+  #   title: "third article",
+  #   description: "description of third article",
+  #   created_at: Thu, 11 Jul 2024 23:00:49.783965000 JST +09:00,
+  #   updated_at: Thu, 11 Jul 2024 23:00:49.783965000 JST +09:00>]
+
+  Article.find(2)
+  # Article Load (0.2ms)  SELECT "articles".* FROM "articles" WHERE "articles"."id" = ? LIMIT ?  [["id", 2], ["LIMIT", 1]]
+  # => #<Article:0x00007f5692393998
+  #  id: 2,
+  #  title: "second article",
+  #  description: "description of second article",
+  #  created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
+  #  updated_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00>
+
+  Article.first
+  # Article Load (0.2ms)  SELECT "articles".* FROM "articles" ORDER BY "articles"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  # => #<Article:0x00007f56924012e0
+  #  id: 1,
+  #  title: "first article",
+  #  description: "description of first article",
+  #  created_at: Thu, 11 Jul 2024 22:50:59.929388000 JST +09:00,
+  #  updated_at: Thu, 11 Jul 2024 22:50:59.929388000 JST +09:00>
+
+  Article.last
+  # Article Load (0.2ms)  SELECT "articles".* FROM "articles" ORDER BY "articles"."id" DESC LIMIT ?  [["LIMIT", 1]]
+  # => #<Article:0x00007f5692906290
+  #  id: 3,
+  #  title: "third article",
+  #  description: "description of third article",
+  #  created_at: Thu, 11 Jul 2024 23:00:49.783965000 JST +09:00,
+  #  updated_at: Thu, 11 Jul 2024 23:00:49.783965000 JST +09:00>
+
+  article = Article.find(2)
+  # Article Load (0.2ms)  SELECT "articles".* FROM "articles" WHERE "articles"."id" = ? LIMIT ?  [["id", 2], ["LIMIT", 1]]
+  # => #<Article:0x00007f56923e6b70
+
+  articles = Article.all
+  # Article Load (0.1ms)  SELECT "articles".* FROM "articles"
+  # => [#<Article:0x00007f5698f372f8
+
+  article
+  # => #<Article:0x00007f56923e6b70
+  #  id: 2,
+  #  title: "second article",
+  #  description: "description of second article",
+  #  created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
+  #  updated_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00>
+
+  articles
+  # => [#<Article:0x00007f5698f372f8
+  #   id: 1,
+  #   title: "first article",
+  #   description: "description of first article",
+  #   created_at: Thu, 11 Jul 2024 22:50:59.929388000 JST +09:00,
+  #   updated_at: Thu, 11 Jul 2024 22:50:59.929388000 JST +09:00>,
+  #  #<Article:0x00007f5698f36df8
+  #   id: 2,
+  #   title: "second article",
+  #   description: "description of second article",
+  #   created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
+  #   updated_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00>,
+  #  #<Article:0x00007f5698f36cb8
+  #   id: 3,
+  #   title: "third article",
+  #   description: "description of third article",
+  #   created_at: Thu, 11 Jul 2024 23:00:49.783965000 JST +09:00,
+  #   updated_at: Thu, 11 Jul 2024 23:00:49.783965000 JST +09:00>]
+
+  article.title
+  # => "second article"
+
+  article.description
+  # => "description of second article"
+
+  article.description = 'edited - description of second article'
+  # => "edited - description of second article"
+
+  article
+  # => #<Article:0x00007f56923e6b70
+  #  id: 2,
+  #  title: "second article",
+  #  description: "edited - description of second article",
+  #  created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
+  #  updated_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00>
+
+  Article.find(2)
+  # Article Load (0.1ms)  SELECT "articles".* FROM "articles" WHERE "articles"."id" = ? LIMIT ?  [["id", 2], ["LIMIT", 1]]
+  # => #<Article:0x00007f56923545b8
+  #  id: 2,
+  #  title: "second article",
+  #  description: "description of second article",
+  #  created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
+  #  updated_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00>
+
+  article.save
+  # TRANSACTION (0.1ms)  begin transaction
+  # Article Update (0.4ms)  UPDATE "articles" SET "description" = ?, "updated_at" = ? WHERE "articles"."id" = ?  [["description", "edited - description of second article"], ["updated_at", "2024-07-11 14:14:48.035293"], ["id", 2]]
+  # TRANSACTION (18.0ms)  commit transaction
+  # => true
+
+  Article.find(2)
+  # Article Load (0.2ms)  SELECT "articles".* FROM "articles" WHERE "articles"."id" = ? LIMIT ?  [["id", 2], ["LIMIT", 1]]
+  # => #<Article:0x00007f56923dec40
+  #  id: 2,
+  #  title: "second article",
+  #  description: "edited - description of second article",
+  #  created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
+  #  updated_at: Thu, 11 Jul 2024 23:14:48.035293000 JST +09:00>
+
+  article = Article.last
+  # Article Load (0.1ms)  SELECT "articles".* FROM "articles" ORDER BY "articles"."id" DESC LIMIT ?  [["LIMIT", 1]]
+  # => #<Article:0x00007f5698491880
+
+  article.destroy
+  # TRANSACTION (0.1ms)  begin transaction
+  # Article Destroy (0.3ms)  DELETE FROM "articles" WHERE "articles"."id" = ?  [["id", 3]]
+  # TRANSACTION (10.7ms)  commit transaction
+  # => #<Article:0x00007f5698491880
+  #  id: 3,
+  #  title: "third article",
+  #  description: "description of third article",
+  #  created_at: Thu, 11 Jul 2024 23:00:49.783965000 JST +09:00,
+  #  updated_at: Thu, 11 Jul 2024 23:00:49.783965000 JST +09:00>
+
+  Article.all
+  # Article Load (0.1ms)  SELECT "articles".* FROM "articles"
+  # => [#<Article:0x00007f5692957f78
+  #   id: 1,
+  #   title: "first article",
+  #   description: "description of first article",
+  #   created_at: Thu, 11 Jul 2024 22:50:59.929388000 JST +09:00,
+  #   updated_at: Thu, 11 Jul 2024 22:50:59.929388000 JST +09:00>,
+  #  #<Article:0x00007f5692957eb0
+  #   id: 2,
+  #   title: "second article",
+  #   description: "edited - description of second article",
+  #   created_at: Thu, 11 Jul 2024 22:57:01.090116000 JST +09:00,
+  #   updated_at: Thu, 11 Jul 2024 23:14:48.035293000 JST +09:00>]
+  ```
