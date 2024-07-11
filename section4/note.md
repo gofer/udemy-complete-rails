@@ -422,3 +422,65 @@
     # TRANSACTION (17.2ms)  commit transaction
     # => true
     ```
+
+## 84. Show articles (route, action and view)
+
+- Railsアプリケーション
+  ```plain
+                Rails Application
+  browser ----> route (config/routes.rb) --------------------------+
+    ^                                                              |                       
+    |                                                              v
+    +---------- view (app/views/articles/show.html.erb) <-----  controller (app/controllers/article_controller.rb)
+                                                                   |
+                                                                   v
+                                                                model (app/models/article.rb)
+                                                                   ^
+                                                                   |
+                                                                   v
+                                                                database
+  ```
+
+- ルーティング
+  - `config/routes.rb`
+    ```ruby
+    Rails.application.routes.draw do
+      # resources :articles
+      resources :articles, only: [:show]
+    end
+    ```
+
+- コントローラー
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      def show
+      end
+    end
+    ```
+
+- ビュー
+  - `app/views/articles/show.html.erb`
+    ```erb
+    <h1>Showing article details</h1>
+    ```
+
+- モデルの内容を表示する
+  - コントローラー
+    - `app/controllers/articles_controller.rb`
+      ```ruby
+      class ArticlesController < ApplicationController
+        def show
+          @article = Article.find(params[:id])
+        end
+      end
+      ```
+
+  - ビュー
+    - `app/views/articles/show.html.erb`
+      ```erb
+      <h1>Showing article details</h1>
+
+      <p><strong>Title: </strong><%= @article.title %></p>
+      <p><strong>Description: </strong><%= @article.description %></p>
+      ```
