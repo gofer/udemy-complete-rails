@@ -696,3 +696,41 @@
       </p>
     <% end %>
     ```
+
+## 96. Delete: delete articles
+
+- 削除機能を作成する
+- ルーティング
+  - `config/routes.rb`
+    ```ruby
+    Rails.application.routes.draw do
+      # resources :articles, only: [:show, :index, :new, :create, :edit, :update, :destroy]
+      resources :articles
+    end
+    ```
+  - REST (Representational state transfer)はHTTP動詞をCRUDのアクションに対応させる
+  - `resources`ではRailsリソースに対するRESTfulなルートをすべて定義する
+- コントローラー
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      # ...
+
+      def destroy
+        @article = Article.find(params[:id])
+        @article.destroy
+        redirect_to articles_path
+      end
+    end
+    ```
+- ビュー
+  - `app/views/articles/index.html.erb`
+    ```erb
+    <% @articles.each do |article| %>
+    <tr>
+      <td><%= article.title %></td>
+      <td><%= article.description %></td>
+      <td><%= link_to 'Delete', article_path(article), method: :delete %></td>
+    </tr>
+    <% end %>
+    ```
