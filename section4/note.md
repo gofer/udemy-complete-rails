@@ -645,3 +645,54 @@
     </body>
     <!-- ... -->
     ```
+
+## 94. Edit and update: update existing articles
+
+- 編集画面と機能を作成する
+- ルーティング
+  - `config/routes.rb`
+    ```ruby
+    Rails.application.routes.draw do
+      resources :articles, only: [:show, :index, :new, :create, :edit, :update]
+    end
+    ```
+- コントローラー
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      # ...
+
+      def edit
+        @article = Article.find(params[:id])
+      end
+
+      def update
+        @article = Article.find(params[:id])
+        if @article.update(params.require(:article).permit(:title, :description))
+          flash[:notice] = 'Article was updated successfully.'
+          redirect_to @article
+        else
+          render 'edit'
+        end
+      end
+    end
+    ```
+- ビュー
+  - `app/views/articles/edit.html.erb`
+    ```erb
+    <%= form_with(model: @article, local: true) do |f| %>
+      <p>
+        <%= f.label :title %><br />
+        <%= f.text_field :title %>
+      </p>
+
+      <p>
+        <%= f.label :description %><br />
+        <%= f.text_area :description %>
+      </p>
+
+      <p>
+        <%= f.submit %>
+      </p>
+    <% end %>
+    ```
