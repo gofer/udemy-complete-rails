@@ -573,3 +573,26 @@
       </p>
     <% end %>
     ```
+
+## 90. Create action - save newly created articles
+
+- 新規作成機能をつくる
+- コントローラー
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      # ...
+
+      def new
+      end
+
+      def create
+        # @article = Article.new(params[:article])
+        @article = Article.new(params.require(:article).permit(:title, :description))
+        @article.save
+
+        # redirect_to article_path(@article)
+        redirect_to @article
+      end
+    end
+    ```
