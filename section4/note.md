@@ -488,6 +488,14 @@
 ## 86. Articles index
 
 - 一覧ページ(index)を作る
+- ルーティング
+  - `config/routes.rb`
+    ```ruby
+    Rails.application.routes.draw do
+      resources :articles, only: [:show, :index]
+    end
+    ```
+- コントローラー
   - `app/controllers/articles_controller.rb`
     ```ruby
     class ArticlesController < ApplicationController
@@ -498,7 +506,8 @@
       end
     end
     ```
-  - `app/views/articles/idnex.html.erb`
+- ビュー
+  - `app/views/articles/index.html.erb`
     ```erb
     <table>
       <thead>
@@ -518,4 +527,49 @@
         <% end %>
       </tbody>
     </table>
+    ```
+
+## 88. Forms - build a new article creation form
+
+- 新規作成画面をつくる
+- ルーティング
+  - `config/routes.rb`
+    ```ruby
+    Rails.application.routes.draw do
+      resources :articles, only: [:show, :index, :new, :create]
+    end
+    ```
+- コントローラー
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      # ...
+
+      def new
+      end
+
+      def create
+        render plain: params[:article]
+      end
+    end
+    ```
+- ビュー
+  - `app/views/articles/new.html.erb`
+    ```erb
+    <%= form_with scope: :article, url: articles_path, local: true do |f| %>
+
+      <p>
+        <%= f.label :title %><br />
+        <%= f.text_field :title %>
+      </p>
+
+      <p>
+        <%= f.label :description %><br />
+        <%= f.text_area :description %>
+      </p>
+
+      <p>
+        <%= f.submit %>
+      </p>
+    <% end %>
     ```
