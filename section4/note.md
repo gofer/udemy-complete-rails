@@ -484,3 +484,38 @@
       <p><strong>Title: </strong><%= @article.title %></p>
       <p><strong>Description: </strong><%= @article.description %></p>
       ```
+
+## 86. Articles index
+
+- 一覧ページ(index)を作る
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      # ...
+
+      def index
+        @articles = Article.all
+      end
+    end
+    ```
+  - `app/views/articles/idnex.html.erb`
+    ```erb
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @articles.each do |article| %>
+        <tr>
+          <td><%= article.title %></td>
+          <td><%= article.description %></td>
+          <td>Placeholder</td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    ```
