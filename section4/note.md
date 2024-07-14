@@ -596,3 +596,52 @@
       end
     end
     ```
+
+## 92. Messaging - validation and flash messages
+
+- バリデーションとフラッシュメッセージの実装
+- コントローラー
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      # ...
+
+      def new
+        # for `if @article.errors.any?`
+        @article = Article.new
+      end
+
+      def create
+        @article = Article.new(params.require(:article).permit(:title, :description))
+        if @article.save
+          flash[:notice] = 'Article was created successfully.'
+          redirect_to @article
+        else
+          render 'new'
+        end
+      end
+    end
+    ```
+- ビュー
+  - `app/views/articles/new.html.erb`
+    ```erb
+    <% if @article.errors.any? %>
+      <h2>The following errors prevented the article from being saved</h2>
+      <ul>
+      <% @article.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    <% end %>
+    ```
+  - `app/views/layouts/application.html.erb`
+    ```erb
+    <!-- ... -->
+    <body>
+      <% flash.each do |name, msg| %>
+        <%= msg %>
+      <% end %>
+      <%= yield %>
+    </body>
+    <!-- ... -->
+    ```
