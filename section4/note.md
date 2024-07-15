@@ -744,3 +744,132 @@
     <%= link_to 'Delete', article_path(@article), method: :delete, data: { confirm: 'Are you sure?' } %>
     <!-- ... -->
     ```
+
+## 100. DRY (Don't Repeat Yourself) code - refactoring and partials
+
+- DRY; Don't Repeat Yourself
+  - 冗長なコードを取り除き，同じこと繰り返さない
+  - コードの再利用
+  - リファクタリング
+  - 部分ビューの利用
+- コントローラー
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      before_action :set_article, only: [:show, :edit, :update, :destroy]
+
+      def show
+      end
+
+      def index
+        @articles = Article.all
+      end
+
+      def new
+        @article = Article.new
+      end
+
+      def edit
+      end
+
+      def create
+        @article = Article.new(article_params)
+        if @article.save
+          flash[:notice] = 'Article was created successfully.'
+          redirect_to @article
+        else
+          render 'new'
+        end
+      end
+
+      def update
+        if @article.update(article_params)
+          flash[:notice] = 'Article was updated successfully.'
+          redirect_to @article
+        else
+          render 'edit'
+        end
+      end
+
+      def destroy
+        @article.destroy
+        redirect_to articles_path
+      end
+
+      private
+
+      def set_article
+        @article = Article.find(params[:id])
+      end
+
+      def article_params
+        params.require(:article).permit(:title, :description)
+      end
+    end
+    ```
+- ビュー
+  - `app/views/layouts/_message_.html.erb`
+    ```erb
+    <% flash.each do |name, msg| %>
+      <%= msg %>
+    <% end %>
+    ```
+  - `app/views/layouts/application.html.erb`
+    ```erb
+    <!-- ... -->
+    <body>
+      <%= render 'layouts/messages' %>
+      <%= yield %>
+    </body>
+    <!-- ... -->
+    ```
+  - `app/views/articles/_form_.html.erb`
+    ```erb
+    <% if @article.errors.any? %>
+      <h2>The following errors prevented the article from being saved</h2>
+      <ul>
+      <% @article.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    <% end %>
+
+    <%= form_with(model: @article, local: true) do |f| %>
+      <p>
+        <%= f.label :title %><br />
+        <%= f.text_field :title %>
+      </p>
+
+      <p>
+        <%= f.label :description %><br />
+        <%= f.text_area :description %>
+      </p>
+
+      <p>
+        <%= f.submit %>
+      </p>
+    <% end %>
+    ```
+  - `app/views/articles/edit.html.erb`
+    ```erb
+    <h1>Edit article</h1>
+
+    <%= render 'form' %>
+
+    <%= link_to 'Cancel and return to articles listing', articles_path %>
+    ```
+  - `app/views/articles/new.html.erb`
+    ```erb
+    <h1>Create a new article</h1>
+
+    <%= render 'form' %>
+
+    <%= link_to 'Return to articles listing', articles_path %>
+    ```
+  - `edit.html.erb`と`new.html.erb`で同じフォームを使える
+    > `articles_controller.rb`で
+    >
+    > - `new`は`@article = Article.new`
+    > - `edit`は`@article = Article.find(params[:id])`
+    >
+    > のように，`@article`がセットされているから
