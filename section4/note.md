@@ -734,3 +734,13 @@
     </tr>
     <% end %>
     ```
+
+## 98. User Interface - add layout links
+
+- 削除時に確認のメッセージを表示
+  - `app/views/articles/show.html.erb`
+    ```erb
+    <!-- ... -->
+    <%= link_to 'Delete', article_path(@article), method: :delete, data: { confirm: 'Are you sure?' } %>
+    <!-- ... -->
+    ```
