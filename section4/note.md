@@ -873,3 +873,9 @@
     > - `edit`は`@article = Article.find(params[:id])`
     >
     > のように，`@article`がセットされているから
+
+## 102. Production deploy and wrap up section 4
+
+- Herokuへのデプロイ
+  1. gitでpush
+  1. Herokuで`rails db:migrate`
