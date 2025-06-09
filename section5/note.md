@@ -14,3 +14,10 @@
 - CSSとJSの依存関係がある
   - CDNを利用する
 - ナビゲーションバーなどを独自に実装する必要がない
+
+
+## 106. Install Bootstrao, asset pipeline, JavaScript, webpack - Rails 6 vs 5
+
+- Rails 5より以前と，Rails 6以降でJavaScriptファイルの扱いが変わった
+- 実際にBootstrapを導入する (CSS+JSをアセットとして組み込む)
+- カスタムスタイルの導入
