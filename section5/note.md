@@ -7,3 +7,10 @@
   - Mozilla Developer Network (MDN)が良い教材になる
 - モックアップの作成
   - Balsamiq Mockups(有償)などのツールを利用する
+
+## 105. Learn to use Bootstrap
+
+- 今回はBootstrap (v4.4)を利用する
+- CSSとJSの依存関係がある
+  - CDNを利用する
+- ナビゲーションバーなどを独自に実装する必要がない
