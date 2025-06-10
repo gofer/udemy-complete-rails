@@ -48,3 +48,9 @@
 ## 120. Style show view
 
 - 前回に引き続き記事詳細ページのスタイルの作成
+
+## 122. Cleanup layout, production deploy and wrap up section 5
+
+- フッターがすべてのページで表示されるようにする
+- ナビゲーションの編集
+- Herokuへのデプロイ
