@@ -1,4 +1,5 @@
 .vscode
 .env
 .bundle
+.yarn
 vendor
