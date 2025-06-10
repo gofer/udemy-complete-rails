@@ -15,7 +15,6 @@
   - CDNを利用する
 - ナビゲーションバーなどを独自に実装する必要がない
 
-
 ## 106. Install Bootstrao, asset pipeline, JavaScript, webpack - Rails 6 vs 5
 
 - Rails 5より以前と，Rails 6以降でJavaScriptファイルの扱いが変わった
@@ -25,3 +24,7 @@
 ## 108. Install Bootstrap in Rails 5 (or earlier versions)
 
 (古いバージョンのためスキップ)
+
+## 110. Build homepage
+
+- AlphaBlog用のスタイルの作成
