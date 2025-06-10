@@ -28,3 +28,7 @@
 ## 110. Build homepage
 
 - AlphaBlog用のスタイルの作成
+
+## 112. Layout links using Bootstrap classes
+
+- 前回に引き続きヘッダーのリンク部分のスタイルの作成
