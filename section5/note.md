@@ -32,3 +32,7 @@
 ## 112. Layout links using Bootstrap classes
 
 - 前回に引き続きヘッダーのリンク部分のスタイルの作成
+
+## 114. Style articles index page
+
+- 前回に引き続き記事インデックスページのスタイルの作成
