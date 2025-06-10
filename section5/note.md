@@ -44,3 +44,7 @@
 ## 118. Style validation and flash messages
 
 - 前回に引き続き記事作成フォームの検証エラーメッセージのスタイルの作成
+
+## 120. Style show view
+
+- 前回に引き続き記事詳細ページのスタイルの作成
