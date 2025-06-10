@@ -36,3 +36,7 @@
 ## 114. Style articles index page
 
 - 前回に引き続き記事インデックスページのスタイルの作成
+
+## 116. Style form partial
+
+- 前回に引き続き記事作成フォームのスタイルの作成
