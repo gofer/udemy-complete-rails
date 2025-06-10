@@ -21,3 +21,7 @@
 - Rails 5より以前と，Rails 6以降でJavaScriptファイルの扱いが変わった
 - 実際にBootstrapを導入する (CSS+JSをアセットとして組み込む)
 - カスタムスタイルの導入
+
+## 108. Install Bootstrap in Rails 5 (or earlier versions)
+
+(古いバージョンのためスキップ)
