@@ -183,7 +183,7 @@
   irb(main):003:0> User.create(username: "mashrur", email: "mashrur@example.com")
     TRANSACTION (0.0ms)  begin transaction
     User Create (0.2ms)  INSERT INTO "users" ("username", "email", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["username", "mashrur"], ["email", "mashrur@example.com"], ["created_at", "2025-06-26 14:53:40.066628"], ["updated_at", "2025-06-26 14:53:40.066628"]]
-    TRANSACTION (171.2ms)  commit transaction                      
+    TRANSACTION (171.2ms)  commit transaction
   => #<User:0x000074c24dfff670 id: 1, username: "mashrur", email: "mashrur@example.com", created_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00, updated_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00>
   irb(main):004:0> user = User.first
     User Load (0.4ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
@@ -204,9 +204,153 @@
   irb(main):011:0> user.destroy
     TRANSACTION (0.1ms)  begin transaction
     User Destroy (0.4ms)  DELETE FROM "users" WHERE "users"."id" = ?  [["id", 1]]
-    TRANSACTION (8.6ms)  commit transaction                              
+    TRANSACTION (8.6ms)  commit transaction
   => #<User:0x000074c24e4ad988 id: 1, username: "mashrur", email: "mashrur1@example.com", created_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00, updated_at: Thu, 26 Jun 2025 23:55:25.814706000 JST +09:00>
   irb(main):012:0> User.all
     User Load (0.1ms)  SELECT "users".* FROM "users"
   => []
   ```
+
+## 128. Add user validations
+
+- `User`クラスにバリデーションを追加する
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      validates :username, presence: true, length: { minimum: 3, maximum: 25 }
+    end
+    ```
+
+  - 確認する
+    ```ruby
+    irb(main):001:0> user = User.new(username: "aa", email: "aa@example.com")
+      (0.3ms)  SELECT sqlite_version(*)
+    => #<User:0x000074c24e5b8350 id: nil, username: "aa", email: "aa@example.com", created_at: nil, updated_at: nil>
+    irb(main):002:0> user.valid?
+    => false
+    irb(main):003:0> user.errors.full_messages
+    => ["Username is too short (minimum is 3 characters)"]
+
+    irb(main):004:0> user = User.new(username: "a", email: "aa@example.com")
+    => #<User:0x000074c24e477f90 id: nil, username: "a", email: "aa@example.com", created_at: nil, updated_at: nil>
+    irb(main):005:0> user.errors.full_messages
+    => []
+    irb(main):006:0> user.save
+    => false
+    irb(main):007:0> user.errors.full_messages
+    => ["Username is too short (minimum is 3 characters)"]
+    ```
+
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      validates :username, presence: true, uniqueness: true, length: { minimum: 3, maximum: 25 }
+      validates :email, presence: true, length: { maximum: 105 }
+    end
+    ```
+
+  - 確認する
+    ```ruby
+    irb(main):009:0> reload!
+    Reloading...
+    => true
+
+    irb(main):010:0> User.all
+      (0.0ms)  SELECT sqlite_version(*)
+      User Load (0.1ms)  SELECT "users".* FROM "users"
+    => []
+    irb(main):011:0> user = User.new(username: "aaa", email: "aaa@example.com")
+    => #<User:0x000074c24d239860 id: nil, username: "aaa", email: "aaa@example.com", created_at: nil, updated_at: nil>
+    irb(main):012:0> user.save
+      TRANSACTION (0.1ms)  begin transaction
+      User Exists? (0.2ms)  SELECT 1 AS one FROM "users" WHERE "users"."username" = ? LIMIT ?  [["username", "aaa"], ["LIMIT", 1]]
+      User Create (0.2ms)  INSERT INTO "users" ("username", "email", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["username", "aaa"], ["email", "aaa@example.com"], ["created_at", "2025-06-26 15:18:45.645020"], ["updated_at", "2025-06-26 15:18:45.645020"]]
+      TRANSACTION (157.8ms)  commit transaction
+    => true
+    irb(main):013:0> User.all
+      User Load (4.2ms)  SELECT "users".* FROM "users"
+    => [#<User:0x000074c24e4556e8 id: 2, username: "aaa", email: "aaa@example.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00>]
+
+    irb(main):014:0> user = User.new(username: "aaa", email: "aaa@example.com")
+    => #<User:0x000074c24c445268 id: nil, username: "aaa", email: "aaa@example.com", created_at: nil, updated_at: nil>
+    irb(main):015:0> user.valid?
+      User Exists? (0.4ms)  SELECT 1 AS one FROM "users" WHERE "users"."username" = ? LIMIT ?  [["username", "aaa"], ["LIMIT", 1]]
+    => false
+    irb(main):016:0> user.errors.full_messages
+    => ["Username has already been taken"]
+
+    irb(main):017:0> user = User.new(username: "Aaa", email: "aaa@example.com")
+    => #<User:0x000074c24dfe2d90 id: nil, username: "Aaa", email: "aaa@example.com", created_at: nil, updated_at: nil>
+    irb(main):018:0> user.valid?
+      User Exists? (0.6ms)  SELECT 1 AS one FROM "users" WHERE "users"."username" = ? LIMIT ?  [["username", "Aaa"], ["LIMIT", 1]]
+    => true
+    ```
+
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      validates :username, presence: true, uniqueness: { case_sensitive: false }, length: { minimum: 3, maximum: 25 }
+      validates :email, presence: true, length: { maximum: 105 }
+    end
+    ```
+
+  - 確認する
+    ```ruby
+    irb(main):019:0> reload!
+    Reloading...
+    => true
+    irb(main):020:0> user = User.new(username: "Aaa", email: "aaa@example.com")
+      (0.1ms)  SELECT sqlite_version(*)
+    => #<User:0x000074c24d256258 id: nil, username: "Aaa", email: "aaa@example.com", created_at: nil, updated_at: nil>
+    irb(main):021:0> user.valid?
+      User Exists? (0.3ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."username") = LOWER(?) LIMIT ?  [["username", "Aaa"], ["LIMIT", 1]]
+    => false
+    irb(main):022:0> user.errors.full_messages
+    => ["Username has already been taken"]
+    ```
+
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      validates :username,
+        presence: true,
+        uniqueness: { case_sensitive: false },
+        length: { minimum: 3, maximum: 25 }
+      VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+      validates :email,
+        presence: true,
+        uniqueness: { case_sensitive: false },
+        length: { maximum: 105 },
+        format: { with: VALID_EMAIL_REGEX }
+    end
+    ```
+
+  - 確認する
+    ```ruby
+    irb(main):023:0> reload!
+    Reloading...
+    => true
+    irb(main):024:0> user = User.new(username: "mashrur", email: "mashrur@com")
+      (0.1ms)  SELECT sqlite_version(*)
+    => #<User:0x000074c24e40b688 id: nil, username: "mashrur", email: "mashrur@com", created_at: nil, updated_at: nil>
+    irb(main):025:0> user.valid?
+      User Exists? (0.2ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."username") = LOWER(?) LIMIT ?  [["username", "mashrur"], ["LIMIT", 1]]
+      User Exists? (0.1ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER(?) LIMIT ?  [["email", "mashrur@com"], ["LIMIT", 1]]
+    => false
+    irb(main):026:0> user.errors.full_messages
+    => ["Email is invalid"]
+
+    irb(main):027:0> user = User.new(username: "mashrur", email: "mashrur@example.com")
+    => #<User:0x000074c24e55da40 id: nil, username: "mashrur", email: "mashrur@example.com", created_at: nil, updated_at: nil>
+    irb(main):028:0> user.valid?
+      User Exists? (0.3ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."username") = LOWER(?) LIMIT ?  [["username", "mashrur"], ["LIMIT", 1]]
+      User Exists? (0.1ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER(?) LIMIT ?  [["email", "mashrur@example.com"], ["LIMIT", 1]]
+    => true
+    irb(main):029:0> user.save
+      TRANSACTION (0.1ms)  begin transaction
+      User Exists? (0.2ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."username") = LOWER(?) LIMIT ?  [["username", "mashrur"], ["LIMIT", 1]]
+      User Exists? (0.1ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER(?) LIMIT ?  [["email", "mashrur@example.com"], ["LIMIT", 1]]
+      User Create (0.3ms)  INSERT INTO "users" ("username", "email", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["username", "mashrur"], ["email", "mashrur@example.com"], ["created_at", "2025-06-26 15:33:48.494953"], ["updated_at", "2025-06-26 15:33:48.494953"]]
+      TRANSACTION (5.6ms)  commit transaction
+    => true
+    ```
