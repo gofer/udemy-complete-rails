@@ -140,3 +140,73 @@
     TRANSACTION (161.3ms)  commit transaction
   => [#<Article:0x000077352d521500 id: 1, title: "first article", description: "description of first article", created_at: Wed, 18 Jun 2025 00:18:42.733026000 JST +09:00, updated_at: Wed, 18 Jun 2025 00:36:48.723286000 JST +09:00, user_id: 2>]
   ```
+
+## 126. Create users
+
+`users`テーブルを作るが，ユーザ名とメールアドレスを最初カラムとして追加し，パスワードは後で追加する。
+
+現在はmain (master) ブランチにおりアプリケーションはデプロイ可能である。
+これからの作業のためにfeatureブランチを作成し，デプロイできない状態のコードをmainに置かないようにする。
+
+- userテーブル用のマイグレーションを生成する
+  ```bash
+  rails generate migration create_users
+  ```
+
+  - `db/migrate/yyyymmddhhmmss_create_users.rb`
+    ```ruby
+    class CreateUsers < ActiveRecord::Migration[6.1]
+      def change
+        create_table :users do |t|
+          t.string :username
+          t.string :email
+
+          t.timestamps
+        end
+      end
+    end
+    ```
+
+  ```bash
+  rails db:migrate
+  ```
+
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+    end
+    ```
+
+  ```ruby
+  irb(main):002:0> User
+  => User(id: integer, username: string, email: string, created_at: datetime, updated_at: datetime)
+  irb(main):003:0> User.create(username: "mashrur", email: "mashrur@example.com")
+    TRANSACTION (0.0ms)  begin transaction
+    User Create (0.2ms)  INSERT INTO "users" ("username", "email", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["username", "mashrur"], ["email", "mashrur@example.com"], ["created_at", "2025-06-26 14:53:40.066628"], ["updated_at", "2025-06-26 14:53:40.066628"]]
+    TRANSACTION (171.2ms)  commit transaction                      
+  => #<User:0x000074c24dfff670 id: 1, username: "mashrur", email: "mashrur@example.com", created_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00, updated_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00>
+  irb(main):004:0> user = User.first
+    User Load (0.4ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  => #<User:0x000074c24e4dc878 id: 1, username: "mashrur", email: "mashrur@example.com", created_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00, updated_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00>
+  irb(main):006:0> user.email = "mashrur1@example.com"
+  => "mashrur1@example.com"
+  irb(main):007:0> user.save
+    TRANSACTION (0.1ms)  begin transaction
+    User Update (0.3ms)  UPDATE "users" SET "email" = ?, "updated_at" = ? WHERE "users"."id" = ?  [["email", "mashrur1@example.com"], ["updated_at", "2025-06-26 14:55:25.814706"], ["id", 1]]
+    TRANSACTION (4.2ms)  commit transaction
+  => true
+  irb(main):009:0> User.all
+    User Load (0.3ms)  SELECT "users".* FROM "users"
+  => [#<User:0x000074c24e4c7c20 id: 1, username: "mashrur", email: "mashrur1@example.com", created_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00, updated_at: Thu, 26 Jun 2025 23:55:25.814706000 JST +09:00>]
+  irb(main):010:0> user = User.first
+    User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  => #<User:0x000074c24e4ad988 id: 1, username: "mashrur", email: "mashrur1@example.com", created_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00, updated_at: Thu, 26 Jun 2025 23:55:25.814706000 JST +09:00>
+  irb(main):011:0> user.destroy
+    TRANSACTION (0.1ms)  begin transaction
+    User Destroy (0.4ms)  DELETE FROM "users" WHERE "users"."id" = ?  [["id", 1]]
+    TRANSACTION (8.6ms)  commit transaction                              
+  => #<User:0x000074c24e4ad988 id: 1, username: "mashrur", email: "mashrur1@example.com", created_at: Thu, 26 Jun 2025 23:53:40.066628000 JST +09:00, updated_at: Thu, 26 Jun 2025 23:55:25.814706000 JST +09:00>
+  irb(main):012:0> User.all
+    User Load (0.1ms)  SELECT "users".* FROM "users"
+  => []
+  ```
