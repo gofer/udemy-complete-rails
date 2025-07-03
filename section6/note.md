@@ -354,3 +354,193 @@
       TRANSACTION (5.6ms)  commit transaction
     => true
     ```
+
+## 130. One to many association
+
+- `User`と`Article`の関連付け
+
+  ```bash
+  rails generate migration add_user_id_to_articles
+  ```
+
+  - `db/migrate/yyyymmddhhmmss_add_user_id_to_articles.rb`
+    ```ruby
+    class AddUserIdToArticles < ActiveRecord::Migration[6.1]
+      def change
+        add_column :articles, :user_id, :int
+      end
+    end
+    ```
+
+
+  ```bash
+  rails db:migrate
+  ```
+
+  - `rails console`
+    ```ruby
+    irb(main):001:0> Article.all
+      (0.3ms)  SELECT sqlite_version(*)
+      Article Load (0.1ms)  SELECT "articles".* FROM "articles"
+    =>
+    [#<Article:0x00007fcafc049380 id: 1, title: "sample", description: "this is sample article.", created_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, updated_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, user_id: nil>,
+    #<Article:0x00007fcae75d6ec0 id: 2, title: "hogehoge", description: "hogehoge foo bar\r\n\r\n1. sample\r\n2. hogehoge\r\n3. foobar", created_at: Tue, 10 Jun 2025 23:12:09.503475000 JST +09:00, updated_at: Wed, 11 Jun 2025 00:13:29.153886000 JST +09:00, user_id: nil>]
+    irb(main):002:0> Article
+    => Article(id: integer, title: string, description: text, created_at: datetime, updated_at: datetime, user_id: integer)
+    irb(main):003:0> article = Article.first
+      Article Load (0.2ms)  SELECT "articles".* FROM "articles" ORDER BY "articles"."id" ASC LIMIT ?  [["LIMIT", 1]]
+    => #<Article:0x00007fcae74ab730 id: 1, title: "sample", description: "this is sample article.", created_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, updated_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, user_id: nil>
+    irb(main):004:0> article.user
+    /home/user/.gem/gems/activemodel-6.1.7.8/lib/active_model/attribute_methods.rb:469:in `method_missing': undefined method `user' for #<Article id: 1, title: "sample", description: "this is sample article.", created_at: "2025-06-10 23:08:45.698320000 +0900", updated_at: "2025-06-10 23:08:45.698320000 +0900", user_id: nil> (NoMethodError)              
+    Did you mean?  user_id
+    ```
+
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      has_many :articles
+      validates :username,
+        presence: true,
+        uniqueness: { case_sensitive: false },
+        length: { minimum: 3, maximum: 25 }
+      VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+      validates :email,
+        presence: true,
+        uniqueness: { case_sensitive: false },
+        length: { maximum: 105 },
+        format: { with: VALID_EMAIL_REGEX }
+    end
+    ```
+
+  - `app/models/article.rb`
+    ```ruby
+    class Article < ApplicationRecord
+      belongs_to :user
+      validates :title, presence: true, length: { minimum: 6, maximum: 100 }
+      validates :description, presence: true, length: { minimum: 10, maximum: 300 }
+    end
+    ```
+
+  - `rails console`
+    ```bash
+    irb(main):005:0> reload!
+    Reloading...
+    => true
+    irb(main):006:0> article = Article.first
+      (0.1ms)  SELECT sqlite_version(*)
+      Article Load (0.1ms)  SELECT "articles".* FROM "articles" ORDER BY "articles"."id" ASC LIMIT ?  [["LIMIT", 1]]
+    => #<Article:0x00007fcae753abd8 id: 1, title: "sample", description: "this is sample article.", created_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, updated_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, user_id: nil>
+    irb(main):007:0> article.user
+    => nil
+    irb(main):008:0> user = User.first
+      User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
+    => #<User:0x00007fcafd535f78 id: 2, username: "aaa", email: "aaa@example.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00>
+    irb(main):009:0> user.articles
+      Article Load (0.1ms)  SELECT "articles".* FROM "articles" WHERE "articles"."user_id" = ?  [["user_id", 2]]
+    => []
+    irb(main):010:0> user.articles << article
+      TRANSACTION (0.1ms)  begin transaction
+      Article Update (0.3ms)  UPDATE "articles" SET "updated_at" = ?, "user_id" = ? WHERE "articles"."id" = ?  [["updated_at", "2025-07-03 15:04:26.743915"], ["user_id", 2], ["id", 1]]
+      TRANSACTION (8.3ms)  commit transaction
+    => [#<Article:0x00007fcae753abd8 id: 1, title: "sample", description: "this is sample article.", created_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:04:26.743915707 JST +09:00, user_id: 2>]
+    irb(main):011:0> user.articles
+    => [#<Article:0x00007fcae753abd8 id: 1, title: "sample", description: "this is sample article.", created_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:04:26.743915707 JST +09:00, user_id: 2>]
+    irb(main):012:0> article.user
+    => #<User:0x00007fcafd535f78 id: 2, username: "aaa", email: "aaa@example.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00>
+    irb(main):013:0> article.user.username
+    => "aaa"
+    ```
+
+- ログインしたユーザが記事を作成・編集できるようにする
+  - `app/controllers/articles_controller.rb`
+    ```ruby
+    class ArticlesController < ApplicationController
+      # ...
+
+      def create
+        @article = Article.new(article_params)
+        @article.user = User.first
+        if @article.save
+          flash[:notice] = 'Article was created successfully.'
+          redirect_to @article
+        else
+          render 'new'
+        end
+      end
+
+      # ...
+    end
+    ```
+
+  - `rails console`
+    ```ruby
+    irb(main):001:0> Article.update_all(user_id: User.first.id)
+      (0.3ms)  SELECT sqlite_version(*)
+      User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]             
+      Article Update All (8.1ms)  UPDATE "articles" SET "user_id" = ?  [["user_id", 2]]                              
+    => 2
+    irb(main):002:0> Article.all
+      Article Load (0.1ms)  SELECT "articles".* FROM "articles"
+    =>                                                                                                               
+    [#<Article:0x00007fcae6f90c00 id: 1, title: "sample", description: "this is sample article.", created_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:04:26.743915000 JST +09:00, user_id: 2>,
+    #<Article:0x00007fcae6f78830 id: 2, title: "hogehoge", description: "hogehoge foo bar\r\n\r\n1. sample\r\n2. hogehoge\r\n3. foobar", created_at: Tue, 10 Jun 2025 23:12:09.503475000 JST +09:00, updated_at: Wed, 11 Jun 2025 00:13:29.153886000 JST +09:00, user_id: 2>]
+    ```
+
+## 132. Show user info in articles
+
+- 記事ページにユーザ情報を表示する
+  - `app/views/articles/index.html.erb`
+    ```erb
+    <!-- ... -->
+    <div class="card-header font-italic">
+      by <%= article.user.username if article.user %>
+    </div>
+    <!-- ... -->
+    ```
+
+  - `app/views/articles/show.html.erb`
+    ```erb
+    <!-- ... -->
+    <div class="card-header font-italic">
+      by <%= @article.user.username if @article.user %>
+    </div>
+    <!-- ... -->
+    ```
+
+## 134. Alter object state before_save
+
+- `before_save`メソッドを利用してDBへ格納する前にメールアドレスを小文字に変換してストアする
+  - `rails console`
+    ```ruby
+    irb(main):001:0> User.create(username: "janedoe", email: "JanEDoE@example.com")
+      (0.4ms)  SELECT sqlite_version(*)
+      TRANSACTION (0.0ms)  begin transaction
+      User Exists? (0.1ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."username") = LOWER(?) LIMIT ?  [["username", "janedoe"], ["LIMIT", 1]]
+      User Exists? (0.0ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER(?) LIMIT ?  [["email", "JanEDoE@example.com"], ["LIMIT", 1]]
+      User Create (0.2ms)  INSERT INTO "users" ("username", "email", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["username", "janedoe"], ["email", "JanEDoE@example.com"], ["created_at", "2025-07-03 15:26:47.372483"], ["updated_at", "2025-07-03 15:26:47.372483"]]
+      TRANSACTION (5.5ms)  commit transaction
+    => #<User:0x00007fcafc03f0b0 id: 4, username: "janedoe", email: "JanEDoE@example.com", created_at: Fri, 04 Jul 2025 00:26:47.372483000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:26:47.372483000 JST +09:00>
+    ```
+
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      before_save { self.email = email.downcase }
+      # ...
+    end
+    ```
+
+  - `rails console`
+    ```ruby
+    irb(main):002:0> reload!
+    Reloading...
+    => true
+    irb(main):003:0> User.create(username: "janetdoe", email: "JanETDoE@example.com")
+      (0.0ms)  SELECT sqlite_version(*)
+      TRANSACTION (0.0ms)  begin transaction
+      User Exists? (0.1ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."username") = LOWER(?) LIMIT ?  [["username", "janetdoe"], ["LIMIT", 1]]
+      User Exists? (0.0ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER(?) LIMIT ?  [["email", "JanETDoE@example.com"], ["LIMIT", 1]]
+      User Create (0.2ms)  INSERT INTO "users" ("username", "email", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["username", "janetdoe"], ["email", "janetdoe@example.com"], ["created_at", "2025-07-03 15:29:10.089270"], ["updated_at", "2025-07-03 15:29:10.089270"]]
+      TRANSACTION (4.1ms)  commit transaction
+    => #<User:0x00007fcae75e7540 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00>
+    ```
