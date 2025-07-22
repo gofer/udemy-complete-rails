@@ -648,3 +648,7 @@
 ## 148. Cleanup layout
 
 - ユーザー周りのレイアウトを改修する
+
+## 150. Add pagination to views
+
+- ページネーションを導入する
