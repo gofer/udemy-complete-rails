@@ -623,3 +623,8 @@
   irb(main):014:0> user.authenticate("password123")
   => #<User:0x000079dfdeed0110 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Tue, 22 Jul 2025 22:02:00.649839000 JST +09:00, password_digest: "[FILTERED]">
   ```
+
+## 138. New user signup form
+
+- ユーザー登録フォームを作成する
+  - `UserController` (`app/controllers/users_controller.rb`)
