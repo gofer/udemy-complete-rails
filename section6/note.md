@@ -640,3 +640,7 @@
 ## 144. Show user and profile image
 
 - ユーザ表示ページを作成し，プロフィール画像を表示できるようにする
+
+## 146. Add users index
+
+- ユーザー一覧のページを作成する
