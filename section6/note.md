@@ -628,3 +628,7 @@
 
 - ユーザー登録フォームを作成する
   - `UserController` (`app/controllers/users_controller.rb`)
+
+## 140. Create new users (back-end)
+
+- ユーザー登録リクエストをバックエンド側で処理する
