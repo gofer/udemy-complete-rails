@@ -544,3 +544,82 @@
       TRANSACTION (4.1ms)  commit transaction
     => #<User:0x00007fcae75e7540 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00>
     ```
+
+## 136. Add secure password
+
+- ユーザーが登録できるように認証システムを実装する
+- Deviseという人気のgemがあるが，今回はどのように認証が行われるかを理解するため自前で実装する
+- ユーザーテーブル
+    | `id` | `username` | `email` | `password` |
+    | `1` | `mashrur` | `mash@example.com` | <s>`password123`</s> → `$2a$12$eOvhlQY4zy/j79bMvtDWgub8zPf/kz/vwPda5VileM9L6aaY.a4BC` |
+
+  - パスワードをハッシュ化する (一方向にしか変換できない)
+  - ハッシュアルゴリズムは攻撃者にも既知である
+  - 数多くの元のメッセージとハッシュ値のテーブルから予測してパスワードを復元できるかもしれない (レインボー攻撃)
+  - そのためにソルトというランダムな文字列を付与する
+
+- `app/models/user.rb`
+  ```ruby
+  class User < ApplicationRecord
+    # ...  
+    has_secure_password
+  end
+  ```
+- `rails generate migration add_password_digest_to_users`
+- `db/migrate/yyyymmddhhmmss_add_password_digest_to_users.rb`
+  ```ruby
+  class AddPasswordDigestToUsers < ActiveRecord::Migration[6.1]
+    def change
+      add_column :users, :password_digest, :string
+    end
+  end
+  ```
+- `rails db:migrate`
+- `rails console`
+  ```ruby
+  irb(main):001:0> User.all
+    (0.2ms)  SELECT sqlite_version(*)
+    User Load (0.1ms)  SELECT "users".* FROM "users"
+  =>
+  [#<User:0x000079dfdf124b50 id: 2, username: "aaa", email: "aaa@example.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, password_digest: nil>,
+  #<User:0x000079dfdf0e47f8 id: 3, username: "mashrur", email: "mashrur@example.com", created_at: Fri, 27 Jun 2025 00:33:48.494953000 JST +09:00, updated_at: Fri, 27 Jun 2025 00:33:48.494953000 JST +09:00, password_digest: nil>,
+  #<User:0x000079dfdf0e45c8 id: 4, username: "janedoe", email: "JanEDoE@example.com", created_at: Fri, 04 Jul 2025 00:26:47.372483000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:26:47.372483000 JST +09:00, password_digest: nil>,
+  #<User:0x000079dfdf0eb918 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, password_digest: nil>]
+  irb(main):002:0> BCrypt::Password.create("password")
+  => "$2a$12$joiUbiNk.B8qEI2iggl61ecEHJptm4yC5FPRQe19gZRzQlIY6102u"
+  irb(main):003:0> BCrypt::Password.create("password")
+  => "$2a$12$f3td.qfVBilgI6xI2TTABuWTLK1FVTXIkyi8xVMW2sentPjRHmozi"
+  irb(main):004:0> password = _
+  => "$2a$12$f3td.qfVBilgI6xI2TTABuWTLK1FVTXIkyi8xVMW2sentPjRHmozi"
+  irb(main):005:0> password
+  => "$2a$12$f3td.qfVBilgI6xI2TTABuWTLK1FVTXIkyi8xVMW2sentPjRHmozi"
+  irb(main):006:0> password.salt
+  => "$2a$12$f3td.qfVBilgI6xI2TTABu"
+  irb(main):007:0> user = User.last
+    User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" DESC LIMIT ?  [["LIMIT", 1]]
+  => #<User:0x000079dfdeed0110 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, password_digest: nil>
+  irb(main):008:0> user.password =  "password123"
+  => "password123"
+  irb(main):009:0> user.save
+    TRANSACTION (0.1ms)  begin transaction
+    User Exists? (0.1ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."username") = LOWER(?) AND "users"."id" != ? LIMIT ?  [["username", "janetdoe"], ["id", 5], ["LIMIT", 1]]
+    User Exists? (0.0ms)  SELECT 1 AS one FROM "users" WHERE LOWER("users"."email") = LOWER(?) AND "users"."id" != ? LIMIT ?  [["email", "janetdoe@example.com"], ["id", 5], ["LIMIT", 1]]
+    User Update (0.2ms)  UPDATE "users" SET "updated_at" = ?, "password_digest" = ? WHERE "users"."id" = ?  [["updated_at", "2025-07-22 13:02:00.649839"], ["password_digest", "$2a$12$HYrlPRkuXzCCXe93mSojAOFbqnKyuEmHkkapanDPfFiRY5NsCu8Hm"], ["id", 5]]
+    TRANSACTION (8.4ms)  commit transaction
+  => true
+  irb(main):010:0> User.all
+    User Load (0.1ms)  SELECT "users".* FROM "users"
+  =>
+  [#<User:0x000079dfddc48240 id: 2, username: "aaa", email: "aaa@example.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, password_digest: nil>,
+  #<User:0x000079dfddc48128 id: 3, username: "mashrur", email: "mashrur@example.com", created_at: Fri, 27 Jun 2025 00:33:48.494953000 JST +09:00, updated_at: Fri, 27 Jun 2025 00:33:48.494953000 JST +09:00, password_digest: nil>,
+  #<User:0x000079dfddc48010 id: 4, username: "janedoe", email: "JanEDoE@example.com", created_at: Fri, 04 Jul 2025 00:26:47.372483000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:26:47.372483000 JST +09:00, password_digest: nil>,
+  #<User:0x000079dfddc4fea0 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Tue, 22 Jul 2025 22:02:00.649839000 JST +09:00, password_digest: "[FILTERED]">]
+  irb(main):011:0> user
+  => #<User:0x000079dfdeed0110 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Tue, 22 Jul 2025 22:02:00.649839000 JST +09:00, password_digest: "[FILTERED]">
+  irb(main):012:0> user.authenticate("wrongpassword")
+  => false
+  irb(main):013:0> user.authenticate("password")
+  => false
+  irb(main):014:0> user.authenticate("password123")
+  => #<User:0x000079dfdeed0110 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Tue, 22 Jul 2025 22:02:00.649839000 JST +09:00, password_digest: "[FILTERED]">
+  ```
