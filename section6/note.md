@@ -735,3 +735,7 @@
 ## 164. Restrict actions at controller level - articles
 
 - バックエンド側でも制限を追加する必要がある (記事側)
+
+## 166. Restrict actions in controller level - users
+
+- バックエンド側でも制限を追加する必要がある (ユーザー側)
