@@ -699,3 +699,7 @@
   end
   ```
 - セッションはCookieに保存される
+
+## 156. Authentication helper methods
+
+- 認証にまつわるヘルパーメソッドの実装
