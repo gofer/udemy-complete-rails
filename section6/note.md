@@ -659,3 +659,43 @@
   - メールアドレスとパスワードの組を検証する
   - セッションを活用しログイン状態を維持する
 - ログイン済みユーザーにのみ許可する機能を構築できる
+
+## 154. Create and destroy user sessions
+
+- `rails console`
+  ```ruby
+  irb(main):001:0> user = User.find_by(email: "mashrur.hossain@gmail.com")
+    (0.4ms)  SELECT sqlite_version(*)
+    User Load (0.8ms)  SELECT "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?  [["email", "mashrur.hossain@gmail.com"], ["LIMIT", 1]]
+  => #<User:0x0000749a1939f3c8 id: 2, username: "mashrur-hossain", email: "mashrur.hossain@gmail.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Tue, 22 Jul 2025 23:45:34.252484000 JST +09:00, password_digest: "[FILTERED]">
+  irb(main):002:0> user = User.find_by(email: "mashrur.hossain@gmail.co")
+    User Load (0.3ms)  SELECT "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?  [["email", "mashrur.hossain@gmail.co"], ["LIMIT", 1]]
+  => nil
+  irb(main):003:0> user = User.find_by(email: "mashrur.hossain@gmail.com")
+    User Load (0.2ms)  SELECT "users".* FROM "users" WHERE "users"."email" = ? LIMIT ?  [["email", "mashrur.hossain@gmail.com"], ["LIMIT", 1]]
+  => #<User:0x0000749a192563e0 id: 2, username: "mashrur-hossain", email: "mashrur.hossain@gmail.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Tue, 22 Jul 2025 23:45:34.252484000 JST +09:00, password_digest: "[FILTERED]">
+  irb(main):004:0> user.authenticate("password")
+  => #<User:0x0000749a192563e0 id: 2, username: "mashrur-hossain", email: "mashrur.hossain@gmail.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Tue, 22 Jul 2025 23:45:34.252484000 JST +09:00, password_digest: "[FILTERED]">
+  irb(main):005:0> user.authenticate("passwor")
+  => false
+  ```
+- `app/controllers/sessions_controller.rb`
+  ```ruby
+  class SessionsController < ApplicationController
+    # ...
+
+    def create
+      user = User.find_by(email: params[:session][:email].downcase)
+      if user && user.authenticate(params[:session][:password])
+        flash[:notice] = "Logged in successfully"
+        redirect_to user
+      else
+        flash.now[:alert] = "There was something wrong with your login details"
+        render 'new'
+      end
+    end
+
+    # ...
+  end
+  ```
+- セッションはCookieに保存される
