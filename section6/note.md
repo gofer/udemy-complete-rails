@@ -731,3 +731,7 @@
 ## 162. Modify navigation based on helpers
 
 - ナビゲーション部分を修正する
+
+## 164. Restrict actions at controller level - articles
+
+- バックエンド側でも制限を追加する必要がある (記事側)
