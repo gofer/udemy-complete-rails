@@ -703,3 +703,22 @@
 ## 156. Authentication helper methods
 
 - 認証にまつわるヘルパーメソッドの実装
+
+## 158. Controller methods as helper methods
+
+- 認証機能を実装したので，ビューを整理する
+- ヘルパーメソッドを `ApplicationController` に移動し，`helper_method` としてヘルパーメソッドとしても利用できるようにする
+- `app/controllers/application_controller.rb`
+  ```ruby
+  class ApplicationController < ActionController::Base
+    helper_method :current_user, :logged_in?
+
+    def current_user
+      @current_user ||= User.find(session[:user_id]) if session[:user_id]
+    end
+
+    def logged_in?
+      !!current_user
+    end
+  end
+  ```
