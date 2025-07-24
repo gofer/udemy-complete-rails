@@ -739,3 +739,8 @@
 ## 166. Restrict actions in controller level - users
 
 - バックエンド側でも制限を追加する必要がある (ユーザー側)
+
+## 168. Delete user
+
+- ユーザーの削除をサポートする
+  - ユーザーを削除すると，投稿した記事も削除される
