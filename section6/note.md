@@ -794,3 +794,8 @@
 ## 172. Add admin user access through views and controllers
 
 - 管理者機能を構築し，一部の機能を管理者ユーザにのみ許可するようにする
+
+## 174. Assignment - alert message color based on type
+
+- 課題: フラッシュメッセージの種別に応じて画面側の色を変える
+  - noticeは緑 (`success`)，alertは赤 (`danger`)
