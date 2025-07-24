@@ -790,3 +790,7 @@
   irb(main):006:0> user.admin?
   => true
   ```
+
+## 172. Add admin user access through views and controllers
+
+- 管理者機能を構築し，一部の機能を管理者ユーザにのみ許可するようにする
