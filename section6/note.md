@@ -799,3 +799,8 @@
 
 - 課題: フラッシュメッセージの種別に応じて画面側の色を変える
   - noticeは緑 (`success`)，alertは赤 (`danger`)
+
+## 176. Production deploy and wrap up section 6
+
+- 課題の確認
+- Herokuへのデプロイ
