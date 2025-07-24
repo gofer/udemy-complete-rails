@@ -744,3 +744,49 @@
 
 - ユーザーの削除をサポートする
   - ユーザーを削除すると，投稿した記事も削除される
+
+## 170. Add admin user functionality - intro
+
+- 管理者ユーザー機能を追加する
+  - 管理者ユーザーは一般ユーザーにはない特別なアクションを行える
+  - CRMのようなアプリでは複雑な権限管理が必要なので権限テーブルなどで管理する
+  - SNSなどのように比較的簡単な管理者・モデレーター・一般ユーザー程度の分離ではフィールドや管理者フラグなどで対応する
+
+- `rails generate migration add_admin_to_users`
+  - `yyyymmddhhmmss_add_admin_to_users.rb`
+    ```ruby
+    class AddAdminToUsers < ActiveRecord::Migration[6.1]
+      def change
+        add_column :users, :admin, :boolean, default: false
+      end
+    end
+    ```
+- `rails db:migrate`
+- `rails console`
+  ```ruby
+  irb(main):001:0> User.all
+    (0.3ms)  SELECT sqlite_version(*)
+    User Load (0.1ms)  SELECT "users".* FROM "users"              
+  =>                                                              
+  [#<User:0x00007ea9f0806100 id: 2, username: "mashrur-hossain", email: "mashrur.hossain@gmail.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Tue, 22 Jul 2025 23:45:34.252484000 JST +09:00, password_digest: "[FILTERED]", admin: false>,
+  #<User:0x00007ea9f07e3718 id: 3, username: "mashrur", email: "mashrur@example.com", created_at: Fri, 27 Jun 2025 00:33:48.494953000 JST +09:00, updated_at: Fri, 27 Jun 2025 00:33:48.494953000 JST +09:00, password_digest: nil, admin: false>,
+  #<User:0x00007ea9f07e3650 id: 4, username: "janedoe", email: "JanEDoE@example.com", created_at: Fri, 04 Jul 2025 00:26:47.372483000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:26:47.372483000 JST +09:00, password_digest: nil, admin: false>,
+  #<User:0x00007ea9f07e3588 id: 5, username: "janetdoe", email: "janetdoe@example.com", created_at: Fri, 04 Jul 2025 00:29:10.089270000 JST +09:00, updated_at: Tue, 22 Jul 2025 22:02:00.649839000 JST +09:00, password_digest: "[FILTERED]", admin: false>,
+  #<User:0x00007ea9f07e33f8 id: 6, username: "mashrur2", email: "mashrur2@example.com", created_at: Tue, 22 Jul 2025 22:41:54.755344000 JST +09:00, updated_at: Tue, 22 Jul 2025 22:41:54.755344000 JST +09:00, password_digest: "[FILTERED]", admin: false>,
+  #<User:0x00007ea9f07e3268 id: 7, username: "mashrur3", email: "mashrur27@example.com", created_at: Tue, 22 Jul 2025 22:43:05.414531000 JST +09:00, updated_at: Tue, 22 Jul 2025 22:59:56.968943000 JST +09:00, password_digest: "[FILTERED]", admin: false>,
+  #<User:0x00007ea9f07e3088 id: 8, username: "johndoe", email: "johndoe@example.com", created_at: Wed, 23 Jul 2025 23:16:37.307135000 JST +09:00, updated_at: Wed, 23 Jul 2025 23:16:37.307135000 JST +09:00, password_digest: "[FILTERED]", admin: false>]
+  irb(main):002:0> user = User.first
+    User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  => #<User:0x00007ea9f04e8888 id: 2, username: "mashrur-hossain", email: "mashrur.hossain@gmail.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Tue, 22 Jul 2025 23:45:34.252484000 JST +09:00, password_digest: "[FILTERED]", admin: false>
+  irb(main):003:0> user.admin?
+  => false
+  irb(main):004:0> user.toggle!(:admin)
+    TRANSACTION (0.1ms)  begin transaction
+    User Update (0.3ms)  UPDATE "users" SET "updated_at" = ?, "admin" = ? WHERE "users"."id" = ?  [["updated_at", "2025-07-24 14:27:15.695887"], ["admin", 1], ["id", 2]]
+    TRANSACTION (7.4ms)  commit transaction                                                
+  => true
+  irb(main):005:0> user
+  => #<User:0x00007ea9f04e8888 id: 2, username: "mashrur-hossain", email: "mashrur.hossain@gmail.com", created_at: Fri, 27 Jun 2025 00:18:45.645020000 JST +09:00, updated_at: Thu, 24 Jul 2025 23:27:15.695887000 JST +09:00, password_digest: "[FILTERED]", admin: true>
+  irb(main):006:0> user.admin?
+  => true
+  ```
