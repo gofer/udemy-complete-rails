@@ -212,3 +212,7 @@
 - カテゴリー作成機能の統合テストを追加する
 
 - `rails generate integration_test create_category`
+
+## 188. Integration test for invalid category
+
+- 異常系に対する統合テストを追加する
