@@ -137,3 +137,62 @@
   irb(main):004:0> @category.valid?
   => true
   ```
+
+## 180. Validations using unit tests
+
+- さらにテストを追加する
+
+- `test/models/category_test.rb`
+  ```ruby
+  class CategoryTest < ActiveSupport::TestCase
+    def setup
+      @category = Category.new(name: "Sports")
+    end
+
+    test "category should be valid" do
+      assert @category.valid?
+    end
+
+    test "name should be present" do
+      @category.name = " "
+      assert_not @category.valid?
+    end
+
+    test "name should be unique" do
+      @category.save
+      @category2 = Category.new(name: "Sports")
+      assert_not @category2.valid?
+    end
+
+    test "name should not be too long" do
+      @category.name = "a" * 26
+      assert_not @category.valid?
+    end
+
+    test "name should not be too short" do
+      @category.name = "aa"
+      assert_not @category.valid?
+    end
+  end
+  ```
+
+- `app/models/category.rb`
+  ```ruby
+  class Category < ApplicationRecord
+    validates :name, presence: true, length: { minimum: 3, maximum: 25 }
+    validates_uniqueness_of :name
+  end
+  ```
+
+- `rails test`
+  ```plain
+  Running via Spring preloader in process 15443
+  Run options: --seed 1656
+
+  # Running:
+
+  .....
+
+  Finished in 0.206683s, 24.1916 runs/s, 24.1916 assertions/s.
+  5 runs, 5 assertions, 0 failures, 0 errors, 0 skips
+  ```
