@@ -216,3 +216,7 @@
 ## 188. Integration test for invalid category
 
 - 異常系に対する統合テストを追加する
+
+## 190. Integration test and feature: listing categories
+
+- カテゴリのインデックスページに対する統合テストを追加する
