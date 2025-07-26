@@ -196,3 +196,9 @@
   Finished in 0.206683s, 24.1916 runs/s, 24.1916 assertions/s.
   5 runs, 5 assertions, 0 failures, 0 errors, 0 skips
   ```
+
+## 182. Categories controller and tests
+
+- カテゴリとコントローラーのテストを追加する
+
+- `rails generate test_unit:scaffold category`
