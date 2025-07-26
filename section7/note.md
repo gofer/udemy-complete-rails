@@ -206,3 +206,9 @@
 ## 184. Create category and test
 
 - カテゴリー作成機能をテストファーストで実装する
+
+## 186. Integration test: Create category business process
+
+- カテゴリー作成機能の統合テストを追加する
+
+- `rails generate integration_test create_category`
