@@ -202,3 +202,7 @@
 - カテゴリとコントローラーのテストを追加する
 
 - `rails generate test_unit:scaffold category`
+
+## 184. Create category and test
+
+- カテゴリー作成機能をテストファーストで実装する
