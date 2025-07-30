@@ -220,3 +220,7 @@
 ## 190. Integration test and feature: listing categories
 
 - カテゴリのインデックスページに対する統合テストを追加する
+
+## 192. Admin user requirement and test
+
+- カテゴリの作成は管理者のみに許可するよう修正する
