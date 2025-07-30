@@ -224,3 +224,7 @@
 ## 192. Admin user requirement and test
 
 - カテゴリの作成は管理者のみに許可するよう修正する
+
+## 194. Update navigation
+
+- 管理者が画面からカテゴリを作成できるようにナビゲーションを作成する
