@@ -232,3 +232,108 @@
 ## 196. Many-to-many association - introduction
 
 - 記事とカテゴリの間に多対多の関連を追加する
+
+## 197. Many-to-many association - back-end implementation
+
+- 記事とカテゴリの間に多対多の関連を実装する
+
+- `rails generate migration create_article_categories`
+  - `db/migrate/yyyymmddhhmmss_create_article_categories.rb`
+    ```ruby
+    class CreateArticleCategories < ActiveRecord::Migration[6.1]
+      def change
+        create_table :article_categories do |t|
+          t.integer :article_id
+          t.integer :category_id
+        end
+      end
+    end
+    ```
+  - `rails db:migrate`
+
+- `app/models/article_category.rb`
+  ```ruby
+  class ArticleCategory < ApplicationRecord
+  end
+  ```
+
+- `rails console`
+  ```ruby
+  irb(main):001:0> ArticleCategory.all
+    (0.3ms)  SELECT sqlite_version(*)
+    ArticleCategory Load (0.1ms)  SELECT "article_categories".* FROM "article_categories"
+  => []
+  irb(main):002:0> ArticleCategory
+  => ArticleCategory(id: integer, article_id: integer, category_id: integer)
+  ```
+
+- `app/models/article_category.rb`
+  ```ruby
+  class ArticleCategory < ApplicationRecord
+    belongs_to :article
+    belongs_to :category
+  end
+  ```
+- `app/models/article.rb`
+  ```ruby
+  class Article < ApplicationRecord
+    belongs_to :user
+    has_many :article_categories
+    has_many :categories, through: :article_categories
+    # ...
+  end
+  ```
+- `app/models/category.rb`
+  ```ruby
+  class Category < ApplicationRecord
+    # ...
+    has_many :article_categories
+    has_many :articles, through: :article_categories
+  end
+  ```
+
+- `rails console`
+  ```ruby
+  irb(main):001:0> article = Article.last
+    (0.3ms)  SELECT sqlite_version(*)
+    Article Load (0.1ms)  SELECT "articles".* FROM "articles" ORDER BY "articles"."id" DESC LIMIT ?  [["LIMIT", 1]]
+  => #<Article:0x000077eedad48af0 id: 6, title: "sample title", description: "sample description", created_at: Wed, 23 Jul 2025 23:49:51.286630000 JST +09:00, updated_at: Wed, 23 Jul 2025 23:49:51.286630000 JST +09:00, user_id: 8>
+  irb(main):002:0> article.categories
+    Category Load (0.1ms)  SELECT "categories".* FROM "categories" INNER JOIN "article_categories" ON "categories"."id" = "article_categories"."category_id" WHERE "article_categories"."article_id" = ?  [["article_id", 6]]
+  => []
+  irb(main):003:0> category = Category.last
+    Category Load (4.2ms)  SELECT "categories".* FROM "categories" ORDER BY "categories"."id" DESC LIMIT ?  [["LIMIT", 1]]
+  => #<Category:0x000077eed92494c0 id: 6, name: "Physical fitness", created_at: Sat, 26 Jul 2025 22:10:38.130631000 JST +09:00, updated_at: Sat, 26 Jul 2025 22:10:38.130631000 JST +09:00>
+  irb(main):004:0> category.articles
+    Article Load (0.3ms)  SELECT "articles".* FROM "articles" INNER JOIN "article_categories" ON "articles"."id" = "article_categories"."article_id" WHERE "article_categories"."category_id" = ?  [["category_id", 6]]
+  => []
+  irb(main):005:0> category.articles << article
+    TRANSACTION (0.1ms)  begin transaction
+    ArticleCategory Create (0.7ms)  INSERT INTO "article_categories" ("article_id", "category_id") VALUES (?, ?)  [["article_id", 6], ["category_id", 6]]
+    TRANSACTION (7.7ms)  commit transaction                                    
+  => [#<Article:0x000077eedad48af0 id: 6, title: "sample title", description: "sample description", created_at: Wed, 23 Jul 2025 23:49:51.286630000 JST +09:00, updated_at: Wed, 23 Jul 2025 23:49:51.286630000 JST +09:00, user_id: 8>]
+  irb(main):006:0> category.articles
+  => [#<Article:0x000077eedad48af0 id: 6, title: "sample title", description: "sample description", created_at: Wed, 23 Jul 2025 23:49:51.286630000 JST +09:00, updated_at: Wed, 23 Jul 2025 23:49:51.286630000 JST +09:00, user_id: 8>]
+  irb(main):007:0> category.articles << Article.first
+    Article Load (6.3ms)  SELECT "articles".* FROM "articles" ORDER BY "articles"."id" ASC LIMIT ?  [["LIMIT", 1]]
+    TRANSACTION (0.0ms)  begin transaction                                                
+    ArticleCategory Create (0.2ms)  INSERT INTO "article_categories" ("article_id", "category_id") VALUES (?, ?)  [["article_id", 1], ["category_id", 6]]
+    TRANSACTION (3.7ms)  commit transaction                                               
+  =>                                                                                      
+  [#<Article:0x000077eedad48af0 id: 6, title: "sample title", description: "sample description", created_at: Wed, 23 Jul 2025 23:49:51.286630000 JST +09:00, updated_at: Wed, 23 Jul 2025 23:49:51.286630000 JST +09:00, user_id: 8>,
+  #<Article:0x000077eeda4989f0 id: 1, title: "sample", description: "this is sample article.", created_at: Tue, 10 Jun 2025 23:08:45.698320000 JST +09:00, updated_at: Fri, 04 Jul 2025 00:04:26.743915000 JST +09:00, user_id: 2>]
+  irb(main):008:0> category.articles.count
+    (0.4ms)  SELECT COUNT(*) FROM "articles" INNER JOIN "article_categories" ON "articles"."id" = "article_categories"."article_id" WHERE "article_categories"."category_id" = ?  [["category_id", 6]]
+  => 2
+  irb(main):009:0> article.categories
+  => []
+  irb(main):010:0> article.categories << Category.first
+    Category Load (0.1ms)  SELECT "categories".* FROM "categories" ORDER BY "categories"."id" ASC LIMIT ?  [["LIMIT", 1]]
+    TRANSACTION (0.0ms)  begin transaction                                                    
+    ArticleCategory Create (0.2ms)  INSERT INTO "article_categories" ("article_id", "category_id") VALUES (?, ?)  [["article_id", 6], ["category_id", 1]]
+    TRANSACTION (8.2ms)  commit transaction                                                   
+  => [#<Category:0x000077eed8c09fd8 id: 1, name: "Travel", created_at: Sat, 26 Jul 2025 21:33:40.461314000 JST +09:00, updated_at: Sat, 26 Jul 2025 21:33:40.461314000 JST +09:00>]
+  irb(main):011:0> article.categories.count
+    (0.2ms)  SELECT COUNT(*) FROM "categories" INNER JOIN "article_categories" ON "categories"."id" = "article_categories"."category_id" WHERE "article_categories"."article_id" = ?  [["article_id", 6]]
+  => 2
+  ```
