@@ -228,3 +228,7 @@
 ## 194. Update navigation
 
 - 管理者が画面からカテゴリを作成できるようにナビゲーションを作成する
+
+## 196. Many-to-many association - introduction
+
+- 記事とカテゴリの間に多対多の関連を追加する
