@@ -370,3 +370,8 @@
   [#<Category:0x00007effc438e008 id: 1, name: "Travel", created_at: Sat, 26 Jul 2025 21:33:40.461314000 JST +09:00, updated_at: Sat, 26 Jul 2025 21:33:40.461314000 JST +09:00>,
   #<Category:0x00007effc44cf700 id: 2, name: "Sports", created_at: Sat, 26 Jul 2025 22:08:40.354885000 JST +09:00, updated_at: Sat, 26 Jul 2025 22:08:40.354885000 JST +09:00>]
   ```
+
+## 201. Update article views to display categories
+
+- 記事一覧ページ・記事ページにカテゴリーを表示する
+  - ユーザーページの記事にもカテゴリーが表示される (partial)
