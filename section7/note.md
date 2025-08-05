@@ -3,7 +3,7 @@
 ## 177. Introduction to Section 7
 
 - 多対多の関連付け，自動化テスト (ユニットテスト・機能テスト・統合テスト) について学ぶ
-- 記事とカテゴリの間に多対多の関連が入る
+- 記事とカテゴリーの間に多対多の関連が入る
 - テストの分類
   - 単体テスト (unit tests): モデル，アプリケーションの個々の機能 (バリデーションなど) が正しく動作するかを確認する
   - 機能テスト (functional tests): コントローラーが正しく動作するかを確認する (未ログインユーザが操作を実行できないよう `before_action` で防ぐなど)
@@ -199,7 +199,7 @@
 
 ## 182. Categories controller and tests
 
-- カテゴリとコントローラーのテストを追加する
+- カテゴリーとコントローラーのテストを追加する
 
 - `rails generate test_unit:scaffold category`
 
@@ -219,23 +219,23 @@
 
 ## 190. Integration test and feature: listing categories
 
-- カテゴリのインデックスページに対する統合テストを追加する
+- カテゴリーのインデックスページに対する統合テストを追加する
 
 ## 192. Admin user requirement and test
 
-- カテゴリの作成は管理者のみに許可するよう修正する
+- カテゴリーの作成は管理者のみに許可するよう修正する
 
 ## 194. Update navigation
 
-- 管理者が画面からカテゴリを作成できるようにナビゲーションを作成する
+- 管理者が画面からカテゴリーを作成できるようにナビゲーションを作成する
 
 ## 196. Many-to-many association - introduction
 
-- 記事とカテゴリの間に多対多の関連を追加する
+- 記事とカテゴリーの間に多対多の関連を追加する
 
 ## 197. Many-to-many association - back-end implementation
 
-- 記事とカテゴリの間に多対多の関連を実装する
+- 記事とカテゴリーの間に多対多の関連を実装する
 
 - `rails generate migration create_article_categories`
   - `db/migrate/yyyymmddhhmmss_create_article_categories.rb`
@@ -336,4 +336,37 @@
   irb(main):011:0> article.categories.count
     (0.2ms)  SELECT COUNT(*) FROM "categories" INNER JOIN "article_categories" ON "categories"."id" = "article_categories"."category_id" WHERE "article_categories"."article_id" = ?  [["article_id", 6]]
   => 2
+  ```
+
+## 199. Add association from UI
+
+- 記事の作成時にカテゴリーを追加できるようにする
+
+- `rails console`
+  ```ruby
+  irb(main):001:0> article = Article.new(title: "some title", description: "some description", user: User.last, category_ids: [1, 2])
+    User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" DESC LIMIT ?  [["LIMIT", 1]]
+    Category Load (0.4ms)  SELECT "categories".* FROM "categories" WHERE "categories"."id" IN (?, ?)  [["id", 1], ["id", 2]]                        
+  => #<Article:0x00007effc43cfc38 id: nil, title: "some title", description: "some description", created_at: nil, updated_at: nil, user_id: 8>
+  irb(main):002:0> article.valid?
+    Category Exists? (0.2ms)  SELECT 1 AS one FROM "categories" WHERE "categories"."name" = ? AND "categories"."id" != ? LIMIT ?  [["name", "Travel"], ["id", 1], ["LIMIT", 1]]
+    Category Exists? (0.1ms)  SELECT 1 AS one FROM "categories" WHERE "categories"."name" = ? AND "categories"."id" != ? LIMIT ?  [["name", "Sports"], ["id", 2], ["LIMIT", 1]]
+  => true
+  irb(main):003:0> article
+  => #<Article:0x00007effc43cfc38 id: nil, title: "some title", description: "some description", created_at: nil, updated_at: nil, user_id: 8>
+  irb(main):004:0> article.save
+    TRANSACTION (0.2ms)  begin transaction
+    Category Exists? (0.3ms)  SELECT 1 AS one FROM "categories" WHERE "categories"."name" = ? AND "categories"."id" != ? LIMIT ?  [["name", "Travel"], ["id", 1], ["LIMIT", 1]]
+    Category Exists? (0.0ms)  SELECT 1 AS one FROM "categories" WHERE "categories"."name" = ? AND "categories"."id" != ? LIMIT ?  [["name", "Sports"], ["id", 2], ["LIMIT", 1]]
+    Article Create (1.2ms)  INSERT INTO "articles" ("title", "description", "created_at", "updated_at", "user_id") VALUES (?, ?, ?, ?, ?)  [["title", "some title"], ["description", "some description"], ["created_at", "2025-08-05 14:06:35.465148"], ["updated_at", "2025-08-05 14:06:35.465148"], ["user_id", 8]]                                           
+    ArticleCategory Create (0.4ms)  INSERT INTO "article_categories" ("article_id", "category_id") VALUES (?, ?)  [["article_id", 9], ["category_id", 1]]
+    ArticleCategory Create (0.0ms)  INSERT INTO "article_categories" ("article_id", "category_id") VALUES (?, ?)  [["article_id", 9], ["category_id", 2]]
+    TRANSACTION (4.1ms)  commit transaction
+  => true
+  irb(main):005:0> article
+  => #<Article:0x00007effc43cfc38 id: 9, title: "some title", description: "some description", created_at: Tue, 05 Aug 2025 23:06:35.465148877 JST +09:00, updated_at: Tue, 05 Aug 2025 23:06:35.465148877 JST +09:00, user_id: 8>
+  irb(main):006:0> article.categories
+  => 
+  [#<Category:0x00007effc438e008 id: 1, name: "Travel", created_at: Sat, 26 Jul 2025 21:33:40.461314000 JST +09:00, updated_at: Sat, 26 Jul 2025 21:33:40.461314000 JST +09:00>,
+  #<Category:0x00007effc44cf700 id: 2, name: "Sports", created_at: Sat, 26 Jul 2025 22:08:40.354885000 JST +09:00, updated_at: Sat, 26 Jul 2025 22:08:40.354885000 JST +09:00>]
   ```
