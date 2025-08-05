@@ -379,3 +379,7 @@
 ## 203. Complete category index and show views
 
 - カテゴリーの表示ページを改修する
+
+## 205. Edit categories
+
+- 管理者ユーザーがカテゴリーの名前を変更できるよう改修する
