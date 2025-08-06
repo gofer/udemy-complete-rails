@@ -32,3 +32,7 @@
 - ビューの作成
   - `app/views/chatroom/index.html.erb`
   - `app/views/sessions/new.html.erb`
+
+## 214. Install Semantic-UI for front-end
+
+- フロントエンド用にSemantic UIやjQueryなどの依存関係を準備する
