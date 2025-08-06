@@ -11,3 +11,7 @@
 
 - Railsアプリの構築を行う
   - Railsは5系を利用する (でも現在はサポート外なので6系で構築してみる)
+
+## 212. Task 1: Version control
+
+- GitとGitHubレポジトリの設定
