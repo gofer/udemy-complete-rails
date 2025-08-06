@@ -15,3 +15,20 @@
 ## 212. Task 1: Version control
 
 - GitとGitHubレポジトリの設定
+
+## 213. Task 2: Root and Login routes
+
+- ルートとログインのルート
+  - `config/routes.rb`
+    ```ruby
+    Rails.application.routes.draw do
+      root 'chatroom#index'
+      get 'login', to: 'sessions#new'
+    end
+    ```
+- コントローラーの作成
+  - `app/controllers/chatroom_controller.rb`
+  - `app/controllers/sessions_controller.rb`
+- ビューの作成
+  - `app/views/chatroom/index.html.erb`
+  - `app/views/sessions/new.html.erb`
