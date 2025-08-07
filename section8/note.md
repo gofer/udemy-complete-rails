@@ -57,3 +57,7 @@
 ## 219. Complete Chatroom
 
 - メッセージ入力用のテキストボックスを追加する
+
+## 220. Task 3: Build login page
+
+- ログインページの構築を行う
