@@ -49,3 +49,7 @@
 ## 217. Add favicon
 
 - favicon.icoを追加する
+
+## 218. Build Chatroom Homepage
+
+- ホームページを作成する
