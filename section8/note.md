@@ -65,3 +65,7 @@
 ## 221. Explore the back-end design
 
 - バックエンドの基本的な設計を確認する
+
+## 222. Task 4: Build User resource
+
+- ユーザーのモデル部分の構築を行う
