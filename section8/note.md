@@ -53,3 +53,7 @@
 ## 218. Build Chatroom Homepage
 
 - ホームページを作成する
+
+## 219. Complete Chatroom
+
+- メッセージ入力用のテキストボックスを追加する
