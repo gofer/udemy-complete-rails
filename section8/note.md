@@ -36,3 +36,8 @@
 ## 214. Install Semantic-UI for front-end
 
 - フロントエンド用にSemantic UIやjQueryなどの依存関係を準備する
+
+## 215. Add navigation menu
+
+- (メモ) サーバーの起動: `NODE_OPTIONS='--openssl-legacy-provider' RUBYOPT="-r logger" rails s`
+- アプリケーションにナビゲーションメニューを追加する
