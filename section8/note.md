@@ -45,3 +45,7 @@
 ## 216. Enable dropdown functionality and create nav partial
 
 - ドロップダウンが機能するようにjQueryの設定を行う
+
+## 217. Add favicon
+
+- favicon.icoを追加する
