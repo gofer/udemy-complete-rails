@@ -41,3 +41,7 @@
 
 - (メモ) サーバーの起動: `NODE_OPTIONS='--openssl-legacy-provider' RUBYOPT="-r logger" rails s`
 - アプリケーションにナビゲーションメニューを追加する
+
+## 216. Enable dropdown functionality and create nav partial
+
+- ドロップダウンが機能するようにjQueryの設定を行う

@@ -2,6 +2,6 @@
 //= require semantic-ui
 
 // ドロップダウンを使用するためのコード
-$(function(){
+$(document).on('turbolinks:load', function () {
   $('.ui.dropdown').dropdown();
-})
+});
