@@ -69,3 +69,7 @@
 ## 222. Task 4: Build User resource
 
 - ユーザーのモデル部分の構築を行う
+
+## 223. Task 5: Build Message resource
+
+- メッセージのモデル部分の構築を行う
