@@ -73,3 +73,7 @@
 ## 223. Task 5: Build Message resource
 
 - メッセージのモデル部分の構築を行う
+
+## 224. Task 6: Add actual messages from table
+
+- メッセージを画面表に表示する
