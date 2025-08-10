@@ -98,3 +98,8 @@
 ## 228. Enable flash messages display
 
 - フラッシュメッセージを表示する
+
+## 229. Restrict views at controller layer
+
+- ログイン済みユーザーにのみがチャットルームへ遷移にできるよう修正する
+- 未ログインユーザーのみがログインページへ遷移にできるよう修正する
