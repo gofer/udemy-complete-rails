@@ -81,3 +81,11 @@
 ## 225. Add message pratial and refactor some code
 
 - メッセージを部分ビューに切り出す
+
+## 226. Task 7: Start authentication system
+
+- 認証を実装する
+- ビューとコントローラーで利用するヘルパーメソッドを実装する
+  - `current_user`
+  - `logged_in?`
+  - 'require_user`
