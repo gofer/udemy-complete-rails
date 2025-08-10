@@ -89,3 +89,8 @@
   - `current_user`
   - `logged_in?`
   - 'require_user`
+
+## 227. Add authentication system - create and destroy sessions
+
+- ログイン・ログアウト用のエンドポイントを追加する
+- ナビゲーションの修正
