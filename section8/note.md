@@ -77,3 +77,7 @@
 ## 224. Task 6: Add actual messages from table
 
 - メッセージを画面表に表示する
+
+## 225. Add message pratial and refactor some code
+
+- メッセージを部分ビューに切り出す
