@@ -39,3 +39,7 @@
 - `Gemfile` を編集し，`gem sqlite3` を `development` に，`gem pg` を `production` に配置する
 - 変更のコミットを作成する
 - Herokuへデプロイする
+
+## 245. Assignment 2 completion
+
+- `rails generate controller welcome index`
