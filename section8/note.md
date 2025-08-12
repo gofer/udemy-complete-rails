@@ -162,3 +162,8 @@
 ## 234. Modify and broadcast messages
 
 - ActionCableを利用して新しいメッセージをCreateした後にブロードキャストする
+
+## 235. Display messages using partial
+
+- クライアント (ブラウザ) 側でブロードキャストされたメッセージを表示する
+- 部分ビューを利用するために，ActionCableで部分ビューのレンダリング結果をブロードキャストする
