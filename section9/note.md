@@ -56,3 +56,24 @@
   1. `Gemfile` に `gem devise` を追記
   2. `rails generate devise:install`
     - 必要に応じて `RUBYOPT="-r logger"` をつけておく
+
+## 247. Create users using devise
+
+- deviseを利用してユーザーを作成する
+- `rails generate devise User`
+- `rails db:migrate`
+- `rails console`
+  ```ruby
+  irb(main):001:0> User.all
+    (0.3ms)  SELECT sqlite_version(*)
+    User Load (0.1ms)  SELECT "users".* FROM "users"              
+  => []
+  irb(main):002:0> User
+  => User(id: integer, email: string, encrypted_password: string, reset_password_token: string, reset_password_sent_at: datetime, remember_created_at: datetime, created_at: datetime, updated_at: datetime)
+  ```
+- `app/controllers/application_controller.rb`
+  ```ruby
+  class ApplicationController < ActionController::Base
+    before_action :authenticate_user!
+  end
+  ```
