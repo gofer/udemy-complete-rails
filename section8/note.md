@@ -107,3 +107,10 @@
 ## 230. Add messages from UI
 
 - メッセージ入力のテキストフィールドからメッセージを投稿できるようにする
+
+## 231. Introduction to WebSocket protocol
+
+- チャットアプリのメッセージ機能をリアルタイムにするためにWebSocketプロトコルを利用する
+- HTTPはクライアント・サーバー間の一方向の通信だが，WebSocketでは双方向の通信が可能になる
+  - クライアント・サーバー間の全二重通信が実現できる
+- RailsではActionCableを用いてWebSocketを簡単に実装できる
