@@ -43,3 +43,16 @@
 ## 245. Assignment 2 completion
 
 - `rails generate controller welcome index`
+
+## 246. Add devise gem for authentication
+
+- 以前は認証システムを自作して構築していた
+  - サインアップ・ログイン・ログアウト
+  - ハッシュ化されたパスワード
+  - 登録するメールアドレス宛にリンクを乗せたメールを送信して確認
+  - パスワードを忘れていた際の対応
+  - ログイン済みユーザーの維持
+- deviseというgemを利用してこれらを実装することなく利用できる
+  1. `Gemfile` に `gem devise` を追記
+  2. `rails generate devise:install`
+    - 必要に応じて `RUBYOPT="-r logger"` をつけておく
