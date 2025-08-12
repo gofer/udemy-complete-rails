@@ -31,3 +31,11 @@
 - GitHubレポジトリなどのリモートレポジトリにプッシュする
 
 ## 243. Assignment 1 completion
+
+## 244. Finance Tracker Assignment 2 - Text
+
+- ルートルートを用いてアプリケーションのホームページを作成する
+  - `WelcomeController` に `index` アクションを作成する
+- `Gemfile` を編集し，`gem sqlite3` を `development` に，`gem pg` を `production` に配置する
+- 変更のコミットを作成する
+- Herokuへデプロイする
