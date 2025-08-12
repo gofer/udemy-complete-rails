@@ -158,3 +158,7 @@
       }
     });
     ```
+
+## 234. Modify and broadcast messages
+
+- ActionCableを利用して新しいメッセージをCreateした後にブロードキャストする
