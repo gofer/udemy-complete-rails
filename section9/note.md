@@ -77,3 +77,29 @@
     before_action :authenticate_user!
   end
   ```
+
+## 248. Test Authentication system, login, logout
+
+- deviseを利用した認証をテストする
+- ホームページにログアウト用のリンクを追加しておく
+  - `<%= link_to 'Sign out', destroy_user_session_path, method: :delete %>`
+  - ↑だと動かないようなので `<%= button_to 'Sign out', destroy_user_session_path, method: :delete %>` に変更
+  - または，GETリクエストになるように，`config/initializers/devise.rb` で以下のように設定を変更する
+    ```rb
+    # ...
+    Devise.setup do |config|
+      # ...
+      # config.sign_out_via = :delete
+      config.sign_out_via = :get
+      # ...
+    end
+    ```
+- 実際にサインアップしてみる
+- `rails console`
+  ```ruby
+  irb(main):001:0> User.all
+    (0.6ms)  SELECT sqlite_version(*)
+    User Load (0.1ms)  SELECT "users".* FROM "users"              
+  => [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-08-13 00:28:46.360604000 +0900">]
+  ```
+- 実際にログイン・ログアウトを行ってみる
