@@ -114,3 +114,12 @@
 - HTTPはクライアント・サーバー間の一方向の通信だが，WebSocketでは双方向の通信が可能になる
   - クライアント・サーバー間の全二重通信が実現できる
 - RailsではActionCableを用いてWebSocketを簡単に実装できる
+
+## 232. Implementing real-time with ActionCable overview
+
+- チャネルと呼ばれる方法でサーバー側はメッセージの送受信を制御する
+- 今回のアプリではRails側でChatRoom Channelでサーバ側はメッセージを制御し，クライアント側はJavaScriptで行う
+  1. チャットルームのチャネルを作成
+  2. `MessagesController`を改修し，チャットルームチャネルでデータをブロードキャストできるようにする
+  3. JavaScriptを記述し，データの受信とウィンドウへの追記を行う
+  4. スクロール対応など，スタイルの改修を行う
