@@ -123,3 +123,38 @@
   2. `MessagesController`を改修し，チャットルームチャネルでデータをブロードキャストできるようにする
   3. JavaScriptを記述し，データの受信とウィンドウへの追記を行う
   4. スクロール対応など，スタイルの改修を行う
+
+## 233. Generate a Chatroom channel
+
+- チャットルームチャネル (`app/channels/chatroom_channel.rb`) を作成する
+  - `rails generate channel chatroom`
+  - `app/channels/chatroom_channel.rb`
+    ```ruby
+    class ChatroomChannel < ApplicationCable::Channel
+      def subscribed
+        # stream_from "some_channel"
+      end
+
+      def unsubscribed
+        # Any cleanup needed when channel is unsubscribed
+      end
+    end
+    ```
+  - `app/javascript/channels/chatroom_channel.js`
+    ```js
+    import consumer from "./consumer"
+
+    consumer.subscriptions.create("ChatroomChannel", {
+      connected() {
+        // Called when the subscription is ready for use on the server
+      },
+
+      disconnected() {
+        // Called when the subscription has been terminated by the server
+      },
+
+      received(data) {
+        // Called when there's incoming data on the websocket for this channel
+      }
+    });
+    ```
