@@ -103,3 +103,8 @@
   => [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-08-13 00:28:46.360604000 +0900">]
   ```
 - 実際にログイン・ログアウトを行ってみる
+
+
+## 249. Assignment: Add Bootstrap to the application
+
+- フロントのスタイリング用にBootstrap (v4系) を導入する
