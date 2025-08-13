@@ -121,3 +121,7 @@
   - そこでdevise-bootstrap-viewsというgemを利用する
   - `gem 'devise-bootstrap-views', '~> 1.0'` を `Gemfile` に追記
   - `rails generate devise:views:bootstrap_templates`
+
+## 252. Update layout: containers for styling
+
+- アプリケーションのレイアウトを修正する
