@@ -113,3 +113,11 @@
 
 - Bootstrapを導入してナビゲーションバーを表示する
 - (メモ) `yarn add -D @babel/plugin-proposal-private-methods @babel/plugin-proposal-private-property-in-object` が必要だった
+
+## 251. Update views
+
+- サインアップフォームとログインフォームのスタイリングを行う
+- deviseの生成するviewはgemが持っている
+  - そこでdevise-bootstrap-viewsというgemを利用する
+  - `gem 'devise-bootstrap-views', '~> 1.0'` を `Gemfile` に追記
+  - `rails generate devise:views:bootstrap_templates`
