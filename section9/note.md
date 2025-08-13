@@ -108,3 +108,8 @@
 ## 249. Assignment: Add Bootstrap to the application
 
 - フロントのスタイリング用にBootstrap (v4系) を導入する
+
+## 250. Implementation: Add Bootstrap 4 step by step
+
+- Bootstrapを導入してナビゲーションバーを表示する
+- (メモ) `yarn add -D @babel/plugin-proposal-private-methods @babel/plugin-proposal-private-property-in-object` が必要だった
