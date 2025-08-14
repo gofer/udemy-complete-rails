@@ -125,3 +125,8 @@
 ## 252. Update layout: containers for styling
 
 - アプリケーションのレイアウトを修正する
+
+## 253. Layout Assignment: Add messages and nav partial
+
+- deviseの出すメッセージのスタイリング
+- ナビゲーションバーを部分ビューへ移動させる
