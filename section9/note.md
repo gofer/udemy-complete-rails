@@ -136,3 +136,36 @@
 - [IEX Cloud](https://iexcloud.io) のAPIを利用して株価を取得する
   - iex-ruby-clientというgemを利用する
 - (メモ) しかし2025年現在サービスを終了しているようだ
+
+## 255. Create Stock model with attributes
+
+- `Stock`モデルを作成する
+  - `name`，`ticker`，`last_price`の3つの属性を持つ
+- `rails generate model Stock ticker:string name:string last_price:decimal`
+- `rails db:migrate`
+- `rails console`
+  ```ruby
+  irb(main):001:0> my_stock = Stock.new(name: 'Alphabet', ticker: 'GOOG', last_price: 1300)
+    (0.3ms)  SELECT sqlite_version(*)
+  => #<Stock:0x0000761af24edc38 id: nil, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: nil, updated_at: nil>
+  irb(main):002:0> my_stock
+  => #<Stock:0x0000761af24edc38 id: nil, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: nil, updated_at: nil>
+  irb(main):003:0> Stock.all
+    Stock Load (0.4ms)  SELECT "stocks".* FROM "stocks"
+  => []
+  irb(main):004:0> my_stock.save
+    TRANSACTION (0.1ms)  begin transaction
+    Stock Create (1.3ms)  INSERT INTO "stocks" ("ticker", "name", "last_price", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?)  [["ticker", "GOOG"], ["name", "Alphabet"], ["last_price", 1300.0], ["created_at", "2025-08-14 15:03:54.025873"], ["updated_at", "2025-08-14 15:03:54.025873"]]
+    TRANSACTION (20.2ms)  commit transaction
+  => true
+  irb(main):005:0> Stock.all
+    Stock Load (0.1ms)  SELECT "stocks".* FROM "stocks"
+  => [#<Stock:0x0000761af24b5018 id: 1, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00, updated_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00>]
+  irb(main):006:0> google = Stock.find(1)
+    Stock Load (0.1ms)  SELECT "stocks".* FROM "stocks" WHERE "stocks"."id" = ? LIMIT ?  [["id", 1], ["LIMIT", 1]]
+  => #<Stock:0x0000761acbd9b4b0 id: 1, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00, updated_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00>
+  irb(main):007:0> google
+  => #<Stock:0x0000761acbd9b4b0 id: 1, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00, updated_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00>
+  irb(main):008:0> google.last_price
+  => 0.13e4
+  ```
