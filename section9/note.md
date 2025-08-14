@@ -130,3 +130,9 @@
 
 - deviseの出すメッセージのスタイリング
 - ナビゲーションバーを部分ビューへ移動させる
+
+## 254. Setup and use API key to get stock data
+
+- [IEX Cloud](https://iexcloud.io) のAPIを利用して株価を取得する
+  - iex-ruby-clientというgemを利用する
+- (メモ) しかし2025年現在サービスを終了しているようだ
