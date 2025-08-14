@@ -169,3 +169,8 @@
   irb(main):008:0> google.last_price
   => 0.13e4
   ```
+
+## 256. Stock lookup: build class method to lookup stock info
+
+- `Stock`モデルにIEX CloudのAPIから最新の株価を取得するクラスメソッドを追加する
+- (メモ) とりあえず固定値を返すモックで対応
