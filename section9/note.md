@@ -176,3 +176,13 @@
 - (メモ) とりあえず固定値を返すモックで対応
 - (メモ) [FMP](https://site.financialmodelingprep.com) を利用して株価を取得するクライアントを作成
   - あらかじめユーザー登録とAPIキーの取得を行うこと
+
+## 257. Secure credentials in Rails 6
+
+- APIキーをハードコーディングせずに管理する方法を学ぶ
+  - `config/credentials.yml.enc` を利用する
+  - このファイルは `config/master.key` で暗号化されている
+  - `config/master.key` は `.gitignore` に追加済
+  - `rails credentials:edit` で編集する
+    - (メモ) `EDITOR="code --wait" RUBYOPT="-r logger" rails credentials:edit`
+  - コード側からは `Rails.application.credentials.aws[:access_key_id]` のようにして参照する
