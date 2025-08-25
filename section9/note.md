@@ -196,3 +196,29 @@
   irb(main):001:0> Stock.new_lookup('AAPL')
   => 227.7
   ```
+
+## 259. Setup front-end structure for stock lookup
+
+- フロントエンド側を完成させる
+- `/my_portfolio`ルートを完成させる
+  - `config/routes.rb`
+    ```ruby
+    get 'my_portfolio', to: 'users#my_portfolio'
+    ```
+- `rails generate controller users my_portfolio`
+  ```
+  Running via Spring preloader in process 89605
+        create  app/controllers/users_controller.rb
+        route  get 'users/my_portfolio'
+        invoke  erb
+        create    app/views/users
+        create    app/views/users/my_portfolio.html.erb
+        invoke  test_unit
+        create    test/controllers/users_controller_test.rb
+        invoke  helper
+        create    app/helpers/users_helper.rb
+        invoke    test_unit
+        invoke  assets
+        invoke    scss
+        create      app/assets/stylesheets/users.scss
+  ```
