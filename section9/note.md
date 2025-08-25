@@ -186,3 +186,13 @@
   - `rails credentials:edit` で編集する
     - (メモ) `EDITOR="code --wait" RUBYOPT="-r logger" rails credentials:edit`
   - コード側からは `Rails.application.credentials.aws[:access_key_id]` のようにして参照する
+
+## 258. Store secure API key
+
+- 実際にAPIキーをストアする
+- (メモ) `Rails.application.credentials.fmp_client[:api_key]`
+- `rails c`
+  ```ruby
+  irb(main):001:0> Stock.new_lookup('AAPL')
+  => 227.7
+  ```

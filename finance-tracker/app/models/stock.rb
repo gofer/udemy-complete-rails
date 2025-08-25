@@ -3,14 +3,8 @@ class Stock < ApplicationRecord
     # client = IEX::Api::Client.new(publishable_token: '<<secret_token>>',
     #                               endpoint: 'https://sandbox.iexapis.com/v1')
     # client.price(ticker_symbol)
-    SecretStockData[ticker_symbol] || -1
+
+    client = FmpClient.new(Rails.application.credentials.fmp_client[:api_key], true)
+    client.price(ticker_symbol)
   end
-
-  private
-
-  SecretStockData = {
-    'GOOG' => 1234,
-    'APPL' => 2345,
-    'MSFT' => 3456,
-  }
 end
