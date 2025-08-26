@@ -222,3 +222,7 @@
         invoke    scss
         create      app/assets/stylesheets/users.scss
   ```
+
+## 260. Build Stock Lookup Form
+
+- ティッカーシンボルの検索フォームを構築する
