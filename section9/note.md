@@ -226,3 +226,7 @@
 ## 260. Build Stock Lookup Form
 
 - ティッカーシンボルの検索フォームを構築する
+
+## 261. Display stock price in browser
+
+- ティッカーシンボルの検索機能を実装する
