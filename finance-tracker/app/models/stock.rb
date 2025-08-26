@@ -5,6 +5,6 @@ class Stock < ApplicationRecord
     # client.price(ticker_symbol)
 
     client = FmpClient.new(Rails.application.credentials.fmp_client[:api_key], true)
-    client.price(ticker_symbol)
+    new(ticker: ticker_symbol, name: client.company(ticker_symbol).company_name, last_price: client.price(ticker_symbol))
   end
 end

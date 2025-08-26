@@ -230,3 +230,8 @@
 ## 261. Display stock price in browser
 
 - ティッカーシンボルの検索機能を実装する
+
+## 262. Create and display stock objects in browser
+
+- ティッカーシンボルの検索時に名前やティッカーシンボル，株価などの様々な情報を表示できるようにする
+- `Stock` オブジェクトを利用する
