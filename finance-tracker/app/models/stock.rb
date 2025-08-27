@@ -7,7 +7,7 @@ class Stock < ApplicationRecord
     # rescue => exception
     # end
 
-    client = FmpClient.new(Rails.application.credentials.fmp_client[:api_key], true)
+    client = FmpClient.new(Rails.application.credentials.fmp_client[:api_key], false)
     begin
       new(ticker: ticker_symbol, name: client.company(ticker_symbol).company_name, last_price: client.price(ticker_symbol))
     rescue => exception

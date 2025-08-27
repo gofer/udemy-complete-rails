@@ -256,3 +256,7 @@
     format.js { render partial: 'users/result' }
   end
   ```
+
+## 266. JavaScript responses to invalid search results
+
+- 異常系のレスポンスについてもAjax対応する
