@@ -246,3 +246,13 @@
   - synchronous JavaScript and XML (Ajax)
   - XMLHttpRequest (XHR)
 - `form_tag` ヘルパーで `remote: true` オプションを渡すと，Ajaxリクエストとして送信される
+
+## 265. Setup JavaScript response
+
+- Ajaxリクエストを処理する
+- JSONをviewとして扱う
+  ```ruby
+  respond_to do |format|
+    format.js { render partial: 'users/result' }
+  end
+  ```
