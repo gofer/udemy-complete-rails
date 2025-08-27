@@ -239,3 +239,10 @@
 ## 263. Dealing with invalid search results
 
 - 無効なティッカーシンボルを検索した際に発生するエラーのハンドリングを行う
+
+## 264. Use Ajax for from submission
+
+- Ajax通信でページ全体の再描画を防ぐ
+  - synchronous JavaScript and XML (Ajax)
+  - XMLHttpRequest (XHR)
+- `form_tag` ヘルパーで `remote: true` オプションを渡すと，Ajaxリクエストとして送信される
