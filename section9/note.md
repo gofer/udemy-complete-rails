@@ -365,3 +365,7 @@
     User Load (0.2ms)  SELECT "users".* FROM "users" INNER JOIN "user_stocks" ON "users"."id" = "user_stocks"."user_id" WHERE "user_stocks"."stock_id" = ?  [["stock_id", 3]]
   => [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-08-13 00:28:46.360604000 +0900">]
   ```
+
+## 269. Stocks listing view
+
+- ユーザーが追跡している株式のリストを表示する
