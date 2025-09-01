@@ -260,3 +260,8 @@
 ## 266. JavaScript responses to invalid search results
 
 - 異常系のレスポンスについてもAjax対応する
+
+## 267. Users and stocks: many-to-many association
+
+- ユーザーと株式の間には多対多の関連がある
+  - `user_stocks` という中間リレーションで表現する
