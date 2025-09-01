@@ -265,3 +265,103 @@
 
 - ユーザーと株式の間には多対多の関連がある
   - `user_stocks` という中間リレーションで表現する
+
+## 268. Setup UserStock resource
+
+- 関連をscaffoldする
+  - `rails generate resource UserStock user:references stock:references`
+  - `app/models/user_stock.rb`
+    ```ruby
+    class UserStock < ApplicationRecord
+      belongs_to :user
+      belongs_to :stock
+    end
+    ```
+  - `db/migrate/yyyymmddhhmmss_create_user_stock.rb`
+    ```ruby
+    class CreateUserStocks < ActiveRecord::Migration[6.1]
+      def change
+        create_table :user_stocks do |t|
+          t.references :user, null: false, foreign_key: true
+          t.references :stock, null: false, foreign_key: true
+
+          t.timestamps
+        end
+      end
+    end
+    ```
+- ユーザと株式にも `has_many` を追加する
+  - `app/models/stock.rb`
+    ```ruby
+    class Stock < ApplicationRecord
+      has_many :user_stocks
+      has_many :users, through: :user_stocks
+
+      validates :name, :ticker, presence: true
+
+      # ...
+    end    
+    ``` 
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      has_many :user_stocks
+      has_many :stocks, through: :user_stocks
+
+      # ...
+    end
+    ```
+- `rails db:migrate`
+- `rails console`
+  ```ruby
+  irb(main):001:0> UserStock.all
+    (0.3ms)  SELECT sqlite_version(*)
+    UserStock Load (0.1ms)  SELECT "user_stocks".* FROM "user_stocks"  
+  => []
+  irb(main):002:0> Stock.create(ticker: 'AAPL', name: 'Apple inc.')
+    (0.1ms)  SELECT sqlite_version(*)
+    TRANSACTION (0.0ms)  begin transaction                                                                                
+    Stock Create (0.3ms)  INSERT INTO "stocks" ("ticker", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["ticker", "AAPL"], ["name", "Apple inc."], ["created_at", "2025-09-01 15:27:39.693624"], ["updated_at", "2025-09-01 15:27:39.693624"]]
+    TRANSACTION (5.4ms)  commit transaction                                                                               
+  => #<Stock:0x00007e616fdf0288 id: 2, ticker: "AAPL", name: "Apple inc.", last_price: nil, created_at: Tue, 02 Sep 2025 00:27:39.693624000 JST +09:00, updated_at: Tue, 02 Sep 2025 00:27:39.693624000 JST +09:00>
+  irb(main):003:0> Stock.all
+  Stock Load (0.6ms)  SELECT "stocks".* FROM "stocks"
+  =>                                                                                                                      
+  [#<Stock:0x00007e61963efa78 id: 1, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00, updated_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00>,
+  #<Stock:0x00007e61963ef938 id: 2, ticker: "AAPL", name: "Apple inc.", last_price: nil, created_at: Tue, 02 Sep 2025 00:27:39.693624000 JST +09:00, updated_at: Tue, 02 Sep 2025 00:27:39.693624000 JST +09:00>]
+  irb(main):004:0> user = User.first
+    User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  => #<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-08-13 00:28:46.360604000 +0900">
+  irb(main):005:0> user.stocks
+    Stock Load (0.1ms)  SELECT "stocks".* FROM "stocks" INNER JOIN "user_stocks" ON "stocks"."id" = "user_stocks"."stock_id" WHERE "user_stocks"."user_id" = ?  [["user_id", 1]]
+  => []
+  irb(main):006:0> stock = Stock.first
+    Stock Load (0.1ms)  SELECT "stocks".* FROM "stocks" ORDER BY "stocks"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  => #<Stock:0x00007e616fe7fca8 id: 1, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00, updated_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00>
+  irb(main):007:0> user.stocks << stock
+    TRANSACTION (0.0ms)  begin transaction
+    UserStock Create (0.6ms)  INSERT INTO "user_stocks" ("user_id", "stock_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["user_id", 1], ["stock_id", 1], ["created_at", "2025-09-01 15:29:34.303501"], ["updated_at", "2025-09-01 15:29:34.303501"]]
+    TRANSACTION (4.9ms)  commit transaction                                  
+  => [#<Stock:0x00007e616fe7fca8 id: 1, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00, updated_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00>]
+  irb(main):008:0> UserStock.all
+    UserStock Load (0.2ms)  SELECT "user_stocks".* FROM "user_stocks"
+  => [#<UserStock:0x00007e616fd95838 id: 1, user_id: 1, stock_id: 1, created_at: Tue, 02 Sep 2025 00:29:34.303501000 JST +09:00, updated_at: Tue, 02 Sep 2025 00:29:34.303501000 JST +09:00>]
+  irb(main):009:0> Stock.create(ticker: 'AMZN', name: 'Amazon inc.')
+    TRANSACTION (0.1ms)  begin transaction
+    Stock Create (0.8ms)  INSERT INTO "stocks" ("ticker", "name", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["ticker", "AMZN"], ["name", "Amazon inc."], ["created_at", "2025-09-01 15:31:33.523748"], ["updated_at", "2025-09-01 15:31:33.523748"]]
+    TRANSACTION (4.2ms)  commit transaction                                                                                
+  => #<Stock:0x00007e616fec6090 id: 3, ticker: "AMZN", name: "Amazon inc.", last_price: nil, created_at: Tue, 02 Sep 2025 00:31:33.523748000 JST +09:00, updated_at: Tue, 02 Sep 2025 00:31:33.523748000 JST +09:00>
+  irb(main):010:0> stock = Stock.last
+    Stock Load (0.2ms)  SELECT "stocks".* FROM "stocks" ORDER BY "stocks"."id" DESC LIMIT ?  [["LIMIT", 1]]
+  => #<Stock:0x00007e61940b5080 id: 3, ticker: "AMZN", name: "Amazon inc.", last_price: nil, created_at: Tue, 02 Sep 2025 00:31:33.523748000 JST +09:00, updated_at: Tue, 02 Sep 2025 00:31:33.523748000 JST +09:00>
+  irb(main):011:0> user.stocks << stock
+    TRANSACTION (0.0ms)  begin transaction
+    UserStock Create (4.1ms)  INSERT INTO "user_stocks" ("user_id", "stock_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["user_id", 1], ["stock_id", 3], ["created_at", "2025-09-01 15:32:10.263594"], ["updated_at", "2025-09-01 15:32:10.263594"]]
+    TRANSACTION (4.7ms)  commit transaction                                                                                
+  =>                                                                                                                       
+  [#<Stock:0x00007e616fe7fca8 id: 1, ticker: "GOOG", name: "Alphabet", last_price: 0.13e4, created_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00, updated_at: Fri, 15 Aug 2025 00:03:54.025873000 JST +09:00>,
+  #<Stock:0x00007e61940b5080 id: 3, ticker: "AMZN", name: "Amazon inc.", last_price: nil, created_at: Tue, 02 Sep 2025 00:31:33.523748000 JST +09:00, updated_at: Tue, 02 Sep 2025 00:31:33.523748000 JST +09:00>]
+  irb(main):012:0> stock.users
+    User Load (0.2ms)  SELECT "users".* FROM "users" INNER JOIN "user_stocks" ON "users"."id" = "user_stocks"."user_id" WHERE "user_stocks"."stock_id" = ?  [["stock_id", 3]]
+  => [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-08-13 00:28:46.360604000 +0900">]
+  ```
