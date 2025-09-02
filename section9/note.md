@@ -373,3 +373,7 @@
 ## 270. Cleanup application layout
 
 - レイアウトを整理する
+
+## 271. Track stocks from front-end: browser
+
+- ユーザーがブラウザから株価を追跡できるようにする
