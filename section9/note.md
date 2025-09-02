@@ -369,3 +369,7 @@
 ## 269. Stocks listing view
 
 - ユーザーが追跡している株式のリストを表示する
+
+## 270. Cleanup application layout
+
+- レイアウトを整理する
