@@ -377,3 +377,9 @@
 ## 271. Track stocks from front-end: browser
 
 - ユーザーがブラウザから株価を追跡できるようにする
+
+## 272. Implement stock tracking restrictions
+
+- ユーザーが株式を追跡できる機能に制約を加える
+  - 追跡できる株式は最大10個
+  - 同一の株式は複数追跡できない
