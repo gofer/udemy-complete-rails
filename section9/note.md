@@ -499,3 +499,7 @@
     Friendship Load (0.1ms)  SELECT "friendships".* FROM "friendships"
   => [#<Friendship:0x00007e7166e43300 id: 1, user_id: 1, friend_id: 2, created_at: Thu, 04 Sep 2025 23:50:33.031342000 JST +09:00, updated_at: Thu, 04 Sep 2025 23:50:33.031342000 JST +09:00>]
   ```
+
+## 278. Assignment completion walkthrough: friends list
+
+- 友達一覧ページを実装する
