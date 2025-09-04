@@ -428,3 +428,7 @@
 ## 275. Accept additional fields in app - edit action
 
 - 画面側からユーザーの名前を編集できるようにする
+
+## 276. Complete singup assignment
+
+- サインアップ時にもユーザーの名前を入力できるようにする
