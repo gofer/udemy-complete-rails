@@ -596,3 +596,8 @@
     [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-09-04 23:15:58.624120000 +0900", first_name: "Mashrur", last_name: "Hossain">,
     #<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">]
     ```
+
+## 282. Display search results in the browser
+
+- 友達検索の結果を画面に表示する
+- 検索結果から自分自身とすでに友達になっているユーザーを除外する
