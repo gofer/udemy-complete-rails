@@ -503,3 +503,7 @@
 ## 278. Assignment completion walkthrough: friends list
 
 - 友達一覧ページを実装する
+
+## 279. Assignment: Create search friends form
+
+- 友達検索フォームを実装する
