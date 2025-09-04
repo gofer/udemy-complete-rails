@@ -424,3 +424,7 @@
     TRANSACTION (8.9ms)  commit transaction
   => true
   ```
+
+## 275. Accept additional fields in app - edit action
+
+- 画面側からユーザーの名前を編集できるようにする
