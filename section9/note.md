@@ -512,3 +512,87 @@
 
 - 友達検索機能の実装を行う
 - 名前またはメールアドレスで検索する
+
+## 281. Search users/friends: implement search methods
+
+- 友達検索機能の検索メソッドを実装する
+- `rails console`
+  ```ruby
+  irb(main):001:0> User.where("email like ?", "user@example.com")
+    (0.5ms)  SELECT sqlite_version(*)
+    User Load (0.1ms)  SELECT "users".* FROM "users" WHERE (email like 'user@example.com')
+  => [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-09-04 23:15:58.624120000 +0900", first_name: "Mashrur", last_name: "Hossain">]
+  irb(main):002:0> User.where("email like ?", "%example.com")
+    User Load (0.2ms)  SELECT "users".* FROM "users" WHERE (email like '%@example.com')
+  =>                                                              
+  [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-09-04 23:15:58.624120000 +0900", first_name: "Mashrur", last_name: "Hossain">,
+  #<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">]
+  ```
+- 検索クエリがメールアドレスか名前かわからないので汎用的に検索できるようにする
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      # ...
+
+      def self.matches(field_name, param)
+        where("#{field_name} like ?", "%#{param}%")
+      end
+    end
+    ```
+  - `rails console`
+    ```ruby
+    irb(main):001:0> User.matches('email', '@example.com')
+      (0.3ms)  SELECT sqlite_version(*)
+      User Load (0.1ms)  SELECT "users".* FROM "users" WHERE (email like '%@example.com%')
+    =>                                                              
+    [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-09-04 23:15:58.624120000 +0900", first_name: "Mashrur", last_name: "Hossain">,
+    #<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">]
+    irb(main):002:0> User.matches('first_name', 'john')
+      User Load (0.2ms)  SELECT "users".* FROM "users" WHERE (first_name like '%john%')
+    => [#<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">]
+    ```
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      # ...
+
+      def self.search(param)
+        param.strip!
+        to_send_back = (first_name_matches(param) + last_name_matches(param) + email_matches(param)).uniq
+        return nil unless to_send_back
+        to_send_back
+      end
+
+      def self.first_name_matches(param)
+        matches('first_name', param)
+      end
+
+      def self.last_name_matches(param)
+        matches('last_name', param)
+      end
+
+      def self.email_matches(param)
+        matches('email', param)
+      end
+
+      def self.matches(field_name, param)
+        where("#{field_name} like ?", "%#{param}%")
+      end
+    end
+    ```
+  - `rails console`
+    ```ruby
+    irb(main):001:0> User.search('john')
+      (0.3ms)  SELECT sqlite_version(*)
+      User Load (0.1ms)  SELECT "users".* FROM "users" WHERE (first_name like '%john%')
+      User Load (0.1ms)  SELECT "users".* FROM "users" WHERE (last_name like '%john%')
+      User Load (0.1ms)  SELECT "users".* FROM "users" WHERE (email like '%john%')
+    => [#<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">]
+    irb(main):002:0> User.search('example.com')
+      User Load (0.1ms)  SELECT "users".* FROM "users" WHERE (first_name like '%example.com%')
+      User Load (0.1ms)  SELECT "users".* FROM "users" WHERE (last_name like '%example.com%')
+      User Load (0.1ms)  SELECT "users".* FROM "users" WHERE (email like '%example.com%')
+    =>
+    [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-09-04 23:15:58.624120000 +0900", first_name: "Mashrur", last_name: "Hossain">,
+    #<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">]
+    ```
