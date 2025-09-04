@@ -507,3 +507,8 @@
 ## 279. Assignment: Create search friends form
 
 - 友達検索フォームを実装する
+
+## 280. Add JavaScript response to form submission
+
+- 友達検索機能の実装を行う
+- 名前またはメールアドレスで検索する
