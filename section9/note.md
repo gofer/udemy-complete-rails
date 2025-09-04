@@ -432,3 +432,70 @@
 ## 276. Complete singup assignment
 
 - サインアップ時にもユーザーの名前を入力できるようにする
+
+## 277. Self referential association - user and friends
+
+- ユーザー同士を友人として結びつける機能を実装する
+  - `users` テーブル同士の多対多の関連になる (self referential association)
+- `rails generate model Friendship user:references`
+  - `db/migrate/yyyymmddhhmmss_create_friendships.rb`
+    ```ruby
+    class CreateFriendships < ActiveRecord::Migration[6.1]
+      def change
+        create_table :friendships do |t|
+          t.references :user, null: false, foreign_key: true
+          t.references :friend, references: :users, foreign_key: { to_table: :users }
+
+          t.timestamps
+        end
+      end
+    end
+    ```
+  - `app/models/friendship.rb`
+    ```ruby
+    class Friendship < ApplicationRecord
+      belongs_to :user
+      belongs_to :friend, class_name: 'User'
+    end
+    ```
+  - `app/models/user.rb`
+    ```ruby
+    class User < ApplicationRecord
+      has_many :user_stocks
+      has_many :stocks, through: :user_stocks
+      has_many :friendships
+      has_many :friends, through: :friendships
+
+      # ...
+    end
+    ```
+- `rails db:migrate`
+- `rails console`
+  ```ruby
+  irb(main):001:0> Friendship.all
+    (0.4ms)  SELECT sqlite_version(*)
+    Friendship Load (0.1ms)  SELECT "friendships".* FROM "friendships"  
+  => []
+  irb(main):002:0> Friendship
+  => Friendship(id: integer, user_id: integer, friend_id: integer, created_at: datetime, updated_at: datetime)
+  irb(main):003:0> user = User.first
+    User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  => #<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-09-04 23:15:58.624120000 +0900", first_name: "Mashrur", last_name: "Hossain">
+  irb(main):004:0> user.friendships
+    Friendship Load (0.1ms)  SELECT "friendships".* FROM "friendships" WHERE "friendships"."user_id" = ?  [["user_id", 1]]
+  => []
+  irb(main):005:0> user_2 = User.last
+    User Load (0.2ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" DESC LIMIT ?  [["LIMIT", 1]]
+  => #<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">
+  rb(main):006:0> user.friends << user_2
+    TRANSACTION (0.1ms)  begin transaction
+    Friendship Create (0.8ms)  INSERT INTO "friendships" ("user_id", "friend_id", "created_at", "updated_at") VALUES (?, ?, ?, ?)  [["user_id", 1], ["friend_id", 2], ["created_at", "2025-09-04 14:50:33.031342"], ["updated_at", "2025-09-04 14:50:33.031342"]]
+    TRANSACTION (4.8ms)  commit transaction                                       
+    User Load (0.3ms)  SELECT "users".* FROM "users" INNER JOIN "friendships" ON "users"."id" = "friendships"."friend_id" WHERE "friendships"."user_id" = ?  [["user_id", 1]]
+  => [#<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">]
+  irb(main):007:0> user.friends
+  => [#<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-04 23:32:10.395539000 +0900", first_name: "John", last_name: "Doe">]
+  irb(main):008:0> Friendship.all
+    Friendship Load (0.1ms)  SELECT "friendships".* FROM "friendships"
+  => [#<Friendship:0x00007e7166e43300 id: 1, user_id: 1, friend_id: 2, created_at: Thu, 04 Sep 2025 23:50:33.031342000 JST +09:00, updated_at: Thu, 04 Sep 2025 23:50:33.031342000 JST +09:00>]
+  ```
