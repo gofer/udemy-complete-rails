@@ -387,3 +387,40 @@
 ## 273. Add functionality to remove tracking
 
 - 株式の追跡の停止機能を実装する
+
+## 274. Modify user model
+
+- 基本的なDeviseのカスタマイズ方法について学ぶ
+- ユーザーの名前 (姓と名) を `users` テーブルに追加する
+- `rails generate migration add_first_last_name_to_users`
+  - `db/migrate/yyyymmddhhmmss_add_first_last_name_to_users.rb`
+    ```ruby
+    class AddFirstLastNameToUsers < ActiveRecord::Migration[6.1]
+      def change
+        add_column :users, :first_name, :string
+        add_column :users, :last_name, :string
+      end
+    end
+    ```
+- `rails db:migrate`
+- `rails console`
+  ```ruby
+  irb(main):001:0> User.all
+    (0.6ms)  SELECT sqlite_version(*)
+    User Load (0.2ms)  SELECT "users".* FROM "users"
+  =>
+  [#<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-08-13 00:28:46.360604000 +0900", first_name: nil, last_name: nil>,
+  #<User id: 2, email: "johndoe@example.com", created_at: "2025-09-02 00:36:00.507256000 +0900", updated_at: "2025-09-02 00:36:00.507256000 +0900", first_name: nil, last_name: nil>]
+  irb(main):002:0> user = User.first
+    User Load (0.1ms)  SELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT ?  [["LIMIT", 1]]
+  => #<User id: 1, email: "user@example.com", created_at: "2025-08-13 00:28:46.360604000 +0900", updated_at: "2025-08-13 00:28:46.360604000 +0900", first_name: nil, last_name: nil>
+  irb(main):003:0> user.first_name = 'Mashrur'
+  => "Mashrur"
+  irb(main):004:0> user.last_name = 'Hossain'
+  => "Hossain"
+  irb(main):005:0> user.save
+    TRANSACTION (0.1ms)  begin transaction
+    User Update (0.3ms)  UPDATE "users" SET "updated_at" = ?, "first_name" = ?, "last_name" = ? WHERE "users"."id" = ?  [["updated_at", "2025-09-04 14:15:58.624120"], ["first_name", "Mashrur"], ["last_name", "Hossain"], ["id", 1]]
+    TRANSACTION (8.9ms)  commit transaction
+  => true
+  ```
