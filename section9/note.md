@@ -609,3 +609,8 @@
 ## 284. Implement add friend functionality
 
 - ブラウザから友達のフォローを追加する機能を実装する
+
+## 285. Display user/friend profile and tracking options
+
+- 友達のプロフィールページを作成する
+- プロフィールページにはユーザーの詳細と追跡中の株式のリストが表示される
