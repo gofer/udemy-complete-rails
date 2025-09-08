@@ -605,3 +605,7 @@
 ## 283. Implement remove tracking functionality
 
 - 友達のフォローを外す機能を実装する
+
+## 284. Implement add friend functionality
+
+- ブラウザから友達のフォローを追加する機能を実装する
