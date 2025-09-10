@@ -12,3 +12,58 @@
 ## 290. Setup Authentication System
 
 - deviseなどのgemを追加して認証システムの基礎を作成する
+
+## 292. Sending Email in Production
+
+- SendGridを利用してHerokuからメールの送信を行えるようにする
+  - `heroku addons:create sendgrid:starter`
+  - `heroku config:set SENDGRID_PASSWORD=<<API Key>>`
+  - `config/environment.rb`
+    ```ruby
+    # Load the Rails application.
+    require_relative "application"
+
+    # Initialize the Rails application.
+    Rails.application.initialize!
+
+    ActionMailer::Base.smtp_settings = {
+      :address => 'smtp.sendgrid.net',
+      :port => 587,
+      :authentication => :plain,
+      :user_name => ENV['SENDGRID_USERNAME'],
+      :password => ENV['SENDGRID_PASSWORD'],
+      :domain => 'heroku.com',
+      :enable_starttls_auto => true
+    }
+    ```
+  - `config/environments/developement.rb`
+    ```ruby
+    # ...
+    config.action_mailer.delivery_method = :test
+    config.action_mailer.default_url_options = { :host => 'http://localhost:3000' }
+    # ...
+    ```
+  - `config/environments/production.rb`
+    ```ruby
+    # ...
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.default_url_options = { :host => 'http://localhost:3000' }
+    # ...
+    ```
+- この状態でサインアップしてみると，Pumaのログ (`rails server`) に送信されたメールが表示される
+  - (メモ) `config/environments/developement.rb` で
+    ```ruby
+    config.action_mailer.delivery_method = :smtp
+    ```
+    とすればメールがMailHog宛に送信される。ただし，`ActionMailer::Base.smtp_settings`は以下。
+    ```ruby
+    ActionMailer::Base.smtp_settings = {
+      :address => 'udemy-rails-mail',
+      :port => 1025,
+      :authentication => :plain,
+      :user_name => ENV['SENDGRID_USERNAME'] || 'smtp-user',
+      :password => ENV['SENDGRID_PASSWORD'] || 'smtp-pass',
+      :domain => 'localhost.localdomain',
+      :enable_starttls_auto => true
+    }
+    ```
