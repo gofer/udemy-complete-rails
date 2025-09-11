@@ -94,3 +94,7 @@
   config.mailer_sender = '<<ここに自動送信メールのFROMアドレスを入れる>>'
   # ...
   ```
+
+## 296. Build Homepage
+
+- ホームページを構築する
