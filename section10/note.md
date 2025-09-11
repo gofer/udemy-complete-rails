@@ -67,3 +67,30 @@
       :enable_starttls_auto => true
     }
     ```
+
+## 294. Update Layout and Test Email in Production
+
+- アプリのレイアウトを修正する
+- (メモ)
+  - `bable.config.js`
+    ```js
+    // ...
+
+    // ↓ '@babel/plugin-proposal-private-methods',
+    '@babel/plugin-transform-private-methods',
+
+    // ...
+
+    // ↓ '@babel/plugin-proposal-private-property-in-object',
+    '@babel/plugin-transform-private-property-in-object',
+
+    // ...
+    ```
+  - `export NODE_OPTIONS=--openssl-legacy-provider`
+  - `rails asset:precompile`
+- `config/initializers/devise.rb`
+  ```ruby
+  # ...
+  config.mailer_sender = '<<ここに自動送信メールのFROMアドレスを入れる>>'
+  # ...
+  ```
