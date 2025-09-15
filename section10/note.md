@@ -114,3 +114,44 @@
 
     Stripe.api_key = Rails.configuration.stripe[:secret_key]
     ```
+
+## 300. Payment Model
+
+- Paymentモデルを作成する
+  - ユーザのID (メールアドレス) とトークンが必要
+  - Stripeから返される文字列を永続化する
+- `rails generate model Payment email:string token:string user_id:integer`
+- `rails db:migrate`
+- `app/models/user.rb`
+  ```ruby
+  class User < ApplicationRecord
+    # ...
+    has_one :payment
+    accepts_nested_attributes_for :payment
+  end
+  ```
+  - `accepts_nested_attributes_for` は関連付けられたモデルを，リクエストから与えられたネストした構造から簡単に永続化できるようにできる
+- `app/models/payment.rb`
+  ```ruby
+  class Payment < ApplicationRecord
+    attr_accessor :card_number, :card_cvv, :card_expires_month, :card_expires_year
+    belongs_to :user
+
+    def self.month_options
+      Date::MONTHSNAMES.compact.each_with_index.map{|name, i| ["#{i+1} - #{name}", i+1]}
+    end
+
+    def self.year_options
+      (Date.today.year..(Date.today.year + 10)).to_a
+    end
+
+    def process_payment
+      customer = Stripe::Customer.create email: email, card: token
+
+      Stripe::Charge.create customer: customer.id,
+                            amount: 1000,
+                            description: 'Premium',
+                            currency: 'usd'
+    end
+  end
+  ```
