@@ -10,6 +10,7 @@ gem 'twitter-bootstrap-rails'
 gem 'devise-i18n'
 # gem 'devise-bootstrap-views' は必ず gem 'devise-i18n' より後ろに書く
 gem 'devise-bootstrap-views', '~> 1.0'
+gem 'stripe'
 gem 'jquery-rails'
 gem 'font-awesome-rails'
 # Use Puma as the app server

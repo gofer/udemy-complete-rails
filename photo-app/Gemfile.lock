@@ -235,6 +235,7 @@ GEM
     sqlite3 (1.7.3-arm64-darwin)
     sqlite3 (1.7.3-x86_64-darwin)
     sqlite3 (1.7.3-x86_64-linux)
+    stripe (15.5.0)
     thor (1.4.0)
     tilt (2.6.1)
     timeout (0.4.3)
@@ -295,6 +296,7 @@ DEPENDENCIES
   selenium-webdriver (>= 4.0.0.rc1)
   spring (= 4.2.1)
   sqlite3 (~> 1.4)
+  stripe
   turbolinks (~> 5)
   twitter-bootstrap-rails
   tzinfo-data

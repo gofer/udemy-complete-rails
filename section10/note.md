@@ -98,3 +98,19 @@
 ## 296. Build Homepage
 
 - ホームページを構築する
+
+## 298. Stripe and Payment Introduction
+
+- アプリケーションへのサインアップ時に支払いを行えるようにする
+  - Stripeで支払いを行う
+  - `gem 'sinatra'`
+- Stripeの公開可能キーとシークレットキーを設定しておく
+  - `config/initializer/stripe.rb`
+    ```ruby
+    Rails.configuration.stripe = {
+      :publishable_key => ENV['STRIPE_TEST_PUBLISHABLE_KEY'],
+      :secret_key => ENV['STRIPE_TEST_SECRET_KEY']
+    }
+
+    Stripe.api_key = Rails.configuration.stripe[:secret_key]
+    ```
