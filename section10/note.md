@@ -155,3 +155,7 @@
     end
   end
   ```
+
+## 302. Update Form for Credit Card Payments
+
+- サインアップフォームにクレジットカード情報の入力フィールドを追加する
