@@ -167,3 +167,8 @@
 ## 306. Extend Devise Registrations Controller
 
 - サインアップコントローラを作成し，deviseの元のコントローラーを拡張する
+
+## 308. Fix Conflict Bug
+
+- JavaScriptとTurbolinksの競合による問題を解決する
+- (メモ) 今回は対応なし。3Dセキュアは非対応なので，デビットカードなどでテストする
