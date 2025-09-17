@@ -172,3 +172,34 @@
 
 - JavaScriptとTurbolinksの競合による問題を解決する
 - (メモ) 今回は対応なし。3Dセキュアは非対応なので，デビットカードなどでテストする
+
+## 310. Image Upload
+
+- シンプルな画像のアップロードと管理の仕組みを実装する
+- AWSのS3バケットにデータを格納し，操作する
+  - `carrierwave`，`mini_magick`，`fog`というgemを利用する
+  - (メモ) `fog` の代わりに `fog-aws` を利用する
+- `rails generate scaffold Image name:string picture:string user:references`
+- `rails db:migrate`
+- `rails generate bootstrap:themed Images`
+- `app/models/user.rb`
+  ```ruby
+  class User < ApplicationRecord
+    # ...
+    has_many :images
+  end
+  ```
+- `rails generate uploader Picture`
+- `app/uploders/picture_uploader.rb`
+  ```ruby
+  class PictureUploader < CarrierWave::Uploader::Base
+    # ...
+  end
+  ```
+- `app/models/image.rb`
+  ```ruby
+  class Image < ApplicationRecord
+    belongs_to :user
+    mount_uploader :picture, PictureUploader
+  end
+  ```
