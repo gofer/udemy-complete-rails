@@ -163,3 +163,7 @@
 ## 304. Javascript Events
 
 - サインアップフォームのJavaScript部分を実装する
+
+## 306. Extend Devise Registrations Controller
+
+- サインアップコントローラを作成し，deviseの元のコントローラーを拡張する
