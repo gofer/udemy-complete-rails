@@ -252,3 +252,23 @@
       # ...
     end
     ```
+
+## 316. Complete Prod Image Upload
+
+- S3へアクセスするためのアクセスキー・シークレットキー・バケット名を環境変数として定義する
+  - `heroku config:set S3_ACCESS_KEY=<<アクセスキー>>`
+  - `heroku config:set S3_SECRET_KEY=<<シークレットキー>>`
+  - `heroku config:set S3_BUCKET=<<バケットのARN>>`
+- `config/initializer/carrier_wave.rb`
+  ```ruby
+  if Rails.env.production?
+    CarrierWave.configure do |config|
+      config.fog_credentials = {
+        :provider => 'AWS',
+        :aws_access_key_id => ENV['S3_ACCESS_KEY'],
+        :aws_secret_access_key_id => ENV['S3_SECRET_KEY'],
+      }
+      config.fog_directory = ENV['S3_BUCKET']
+    end
+  end
+  ```
