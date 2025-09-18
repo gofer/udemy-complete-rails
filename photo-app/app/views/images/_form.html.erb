@@ -25,18 +25,10 @@
   <div class="form-group">
     <%= f.label :picture, :class => 'control-label col-lg-2' %>
     <div class="col-lg-10">
-      <%= f.file_field :picture, accept: 'image/jpeg,image/gif,image/png', :class => 'form-control' %>
+      <%= f.file_field :picture, accept: 'image/jpeg,image/gif,image/png'%>
     </div>
     <%=f.error_span(:picture) %>
   </div>
-
-  <%# <div class="form-group"> %>
-  <%#   <%= f.label :user_id, :class => 'control-label col-lg-2' %>
-  <%#   <div class="col-lg-10">  %>
-  <%#     <%= f.text_field :user_id, :class => 'form-control' %>
-  <%#   </div>  %>
-  <%#   <%=f.error_span(:user_id) %>
-  <%# </div>  %>
 
   <div class="form-group">
     <div class="col-lg-offset-2 col-lg-10">
@@ -47,3 +39,12 @@
   </div>
 
 <% end %>
+
+<script type="text/javascript">
+  $('#image_picture').bind('change', function() {
+    var size_in_megabytes = this.files[0].size / 1024 / 1024;
+    if (size_in_megabytes > 5) {
+      alert('Maximum file size if 5MB.');
+    }
+  });
+</script>

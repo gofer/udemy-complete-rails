@@ -203,3 +203,36 @@
     mount_uploader :picture, PictureUploader
   end
   ```
+
+## 312. Image Size Validations
+
+- まず画像のアップロードフォームのスタイルを編集する
+- 画像の検証を追加する
+  - `app/uploaders/picture_uploader.rb`
+    ```ruby
+    class PictureUploader < CarrierWave::Uploader::Base
+      include CarrierWave::MiniMagick
+      process resize_to_limit: [300, 300]
+      # ...
+      def extension_allowlist
+        %w(jpg jpeg gif png)
+      end
+      # ...
+    end
+    ```
+  - `app/models/image.rb`
+    ```ruby
+    class Image < ApplicationRecord
+      belongs_to :user
+      mount_uploader :picture, PictureUploader
+      validate :picture_size
+
+      private
+
+      def picture_size
+        if picture.size > 5.megabytes
+          errors.add(:picture, 'should be less than 5MB')
+        end
+      end
+    end
+    ```
