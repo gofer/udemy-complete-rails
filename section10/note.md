@@ -236,3 +236,19 @@
       end
     end
     ```
+
+## 314. Image Upload in Production
+
+- 本番環境ではfogを利用して，AWSのS3バケット内に画像ファイルを格納するようにする
+  - `app/uploaders/picture_uploader.rb`
+    ```ruby
+    class PictureUploader < CarrierWave::Uploader::Base
+      # ...
+      if Rails.env.production?
+        storage :fog
+      else
+        storage :file
+      end
+      # ...
+    end
+    ```
