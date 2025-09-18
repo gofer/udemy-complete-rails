@@ -1,0 +1,274 @@
+# Section10: Email, Custom Payment Functionality and File Uploads
+
+## 288. Start Photo App
+
+- Alpha Blogでは独自の認証システムをスクラッチで実装し，Finance Trackerではdeviseを利用して認証システムを構築した
+- しかし，実際にユーザーの入力したメールアドレスにメールを送信し，そのメールアドレスが有効であるかを検証する必要がある
+  - サインアップ時にユーザーの入力したメールアドレス宛にメールが送信され，そのメールに記載されたリンクへアクセスしてもらう
+  - ユーザーがメールアドレスの認証を済ませたか否かを表す文字列をユーザーテーブルに保持しておくことで状態を管理する
+  - この方法はdeviseで利用できる
+- このセクションではPhotoAppを開発する
+
+## 290. Setup Authentication System
+
+- deviseなどのgemを追加して認証システムの基礎を作成する
+
+## 292. Sending Email in Production
+
+- SendGridを利用してHerokuからメールの送信を行えるようにする
+  - `heroku addons:create sendgrid:starter`
+  - `heroku config:set SENDGRID_PASSWORD=<<API Key>>`
+  - `config/environment.rb`
+    ```ruby
+    # Load the Rails application.
+    require_relative "application"
+
+    # Initialize the Rails application.
+    Rails.application.initialize!
+
+    ActionMailer::Base.smtp_settings = {
+      :address => 'smtp.sendgrid.net',
+      :port => 587,
+      :authentication => :plain,
+      :user_name => ENV['SENDGRID_USERNAME'],
+      :password => ENV['SENDGRID_PASSWORD'],
+      :domain => 'heroku.com',
+      :enable_starttls_auto => true
+    }
+    ```
+  - `config/environments/developement.rb`
+    ```ruby
+    # ...
+    config.action_mailer.delivery_method = :test
+    config.action_mailer.default_url_options = { :host => 'http://localhost:3000' }
+    # ...
+    ```
+  - `config/environments/production.rb`
+    ```ruby
+    # ...
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.default_url_options = { :host => 'http://localhost:3000' }
+    # ...
+    ```
+- この状態でサインアップしてみると，Pumaのログ (`rails server`) に送信されたメールが表示される
+  - (メモ) `config/environments/developement.rb` で
+    ```ruby
+    config.action_mailer.delivery_method = :smtp
+    ```
+    とすればメールがMailHog宛に送信される。ただし，`ActionMailer::Base.smtp_settings`は以下。
+    ```ruby
+    ActionMailer::Base.smtp_settings = {
+      :address => 'udemy-rails-mail',
+      :port => 1025,
+      :authentication => :plain,
+      :user_name => ENV['SENDGRID_USERNAME'] || 'smtp-user',
+      :password => ENV['SENDGRID_PASSWORD'] || 'smtp-pass',
+      :domain => 'localhost.localdomain',
+      :enable_starttls_auto => true
+    }
+    ```
+
+## 294. Update Layout and Test Email in Production
+
+- アプリのレイアウトを修正する
+- (メモ)
+  - `bable.config.js`
+    ```js
+    // ...
+
+    // ↓ '@babel/plugin-proposal-private-methods',
+    '@babel/plugin-transform-private-methods',
+
+    // ...
+
+    // ↓ '@babel/plugin-proposal-private-property-in-object',
+    '@babel/plugin-transform-private-property-in-object',
+
+    // ...
+    ```
+  - `export NODE_OPTIONS=--openssl-legacy-provider`
+  - `rails asset:precompile`
+- `config/initializers/devise.rb`
+  ```ruby
+  # ...
+  config.mailer_sender = '<<ここに自動送信メールのFROMアドレスを入れる>>'
+  # ...
+  ```
+
+## 296. Build Homepage
+
+- ホームページを構築する
+
+## 298. Stripe and Payment Introduction
+
+- アプリケーションへのサインアップ時に支払いを行えるようにする
+  - Stripeで支払いを行う
+  - `gem 'sinatra'`
+- Stripeの公開可能キーとシークレットキーを設定しておく
+  - `config/initializer/stripe.rb`
+    ```ruby
+    Rails.configuration.stripe = {
+      :publishable_key => ENV['STRIPE_TEST_PUBLISHABLE_KEY'],
+      :secret_key => ENV['STRIPE_TEST_SECRET_KEY']
+    }
+
+    Stripe.api_key = Rails.configuration.stripe[:secret_key]
+    ```
+
+## 300. Payment Model
+
+- Paymentモデルを作成する
+  - ユーザのID (メールアドレス) とトークンが必要
+  - Stripeから返される文字列を永続化する
+- `rails generate model Payment email:string token:string user_id:integer`
+- `rails db:migrate`
+- `app/models/user.rb`
+  ```ruby
+  class User < ApplicationRecord
+    # ...
+    has_one :payment
+    accepts_nested_attributes_for :payment
+  end
+  ```
+  - `accepts_nested_attributes_for` は関連付けられたモデルを，リクエストから与えられたネストした構造から簡単に永続化できるようにできる
+- `app/models/payment.rb`
+  ```ruby
+  class Payment < ApplicationRecord
+    attr_accessor :card_number, :card_cvv, :card_expires_month, :card_expires_year
+    belongs_to :user
+
+    def self.month_options
+      Date::MONTHSNAMES.compact.each_with_index.map{|name, i| ["#{i+1} - #{name}", i+1]}
+    end
+
+    def self.year_options
+      (Date.today.year..(Date.today.year + 10)).to_a
+    end
+
+    def process_payment
+      customer = Stripe::Customer.create email: email, card: token
+
+      Stripe::Charge.create customer: customer.id,
+                            amount: 1000,
+                            description: 'Premium',
+                            currency: 'usd'
+    end
+  end
+  ```
+
+## 302. Update Form for Credit Card Payments
+
+- サインアップフォームにクレジットカード情報の入力フィールドを追加する
+
+## 304. Javascript Events
+
+- サインアップフォームのJavaScript部分を実装する
+
+## 306. Extend Devise Registrations Controller
+
+- サインアップコントローラを作成し，deviseの元のコントローラーを拡張する
+
+## 308. Fix Conflict Bug
+
+- JavaScriptとTurbolinksの競合による問題を解決する
+- (メモ) 今回は対応なし。3Dセキュアは非対応なので，デビットカードなどでテストする
+
+## 310. Image Upload
+
+- シンプルな画像のアップロードと管理の仕組みを実装する
+- AWSのS3バケットにデータを格納し，操作する
+  - `carrierwave`，`mini_magick`，`fog`というgemを利用する
+  - (メモ) `fog` の代わりに `fog-aws` を利用する
+- `rails generate scaffold Image name:string picture:string user:references`
+- `rails db:migrate`
+- `rails generate bootstrap:themed Images`
+- `app/models/user.rb`
+  ```ruby
+  class User < ApplicationRecord
+    # ...
+    has_many :images
+  end
+  ```
+- `rails generate uploader Picture`
+- `app/uploders/picture_uploader.rb`
+  ```ruby
+  class PictureUploader < CarrierWave::Uploader::Base
+    # ...
+  end
+  ```
+- `app/models/image.rb`
+  ```ruby
+  class Image < ApplicationRecord
+    belongs_to :user
+    mount_uploader :picture, PictureUploader
+  end
+  ```
+
+## 312. Image Size Validations
+
+- まず画像のアップロードフォームのスタイルを編集する
+- 画像の検証を追加する
+  - `app/uploaders/picture_uploader.rb`
+    ```ruby
+    class PictureUploader < CarrierWave::Uploader::Base
+      include CarrierWave::MiniMagick
+      process resize_to_limit: [300, 300]
+      # ...
+      def extension_allowlist
+        %w(jpg jpeg gif png)
+      end
+      # ...
+    end
+    ```
+  - `app/models/image.rb`
+    ```ruby
+    class Image < ApplicationRecord
+      belongs_to :user
+      mount_uploader :picture, PictureUploader
+      validate :picture_size
+
+      private
+
+      def picture_size
+        if picture.size > 5.megabytes
+          errors.add(:picture, 'should be less than 5MB')
+        end
+      end
+    end
+    ```
+
+## 314. Image Upload in Production
+
+- 本番環境ではfogを利用して，AWSのS3バケット内に画像ファイルを格納するようにする
+  - `app/uploaders/picture_uploader.rb`
+    ```ruby
+    class PictureUploader < CarrierWave::Uploader::Base
+      # ...
+      if Rails.env.production?
+        storage :fog
+      else
+        storage :file
+      end
+      # ...
+    end
+    ```
+
+## 316. Complete Prod Image Upload
+
+- S3へアクセスするためのアクセスキー・シークレットキー・バケット名を環境変数として定義する
+  - `heroku config:set S3_ACCESS_KEY=<<アクセスキー>>`
+  - `heroku config:set S3_SECRET_KEY=<<シークレットキー>>`
+  - `heroku config:set S3_BUCKET=<<バケットのARN>>`
+- `config/initializer/carrier_wave.rb`
+  ```ruby
+  if Rails.env.production?
+    CarrierWave.configure do |config|
+      config.fog_credentials = {
+        :provider => 'AWS',
+        :aws_access_key_id => ENV['S3_ACCESS_KEY'],
+        :aws_secret_access_key_id => ENV['S3_SECRET_KEY'],
+      }
+      config.fog_directory = ENV['S3_BUCKET']
+    end
+  end
+  ```
