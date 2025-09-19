@@ -79,3 +79,7 @@
   - `rails g milia:install --org_email='do-not-reply@example.com'`
     - (メモ) `rails g philia:install --org_email='do-not-reply@example.com'`
 - `rails db:migrate`
+
+## 326. Add Bootstrap for styling
+
+- アプリケーションにBootstrapを導入する
