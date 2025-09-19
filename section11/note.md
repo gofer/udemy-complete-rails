@@ -83,3 +83,7 @@
 ## 326. Add Bootstrap for styling
 
 - アプリケーションにBootstrapを導入する
+
+## 328. Build Homepage and add styling
+
+- ユーザーがサインインしていればプロファイル編集とログアウトのリンクを，そうでなければサインインのリンクを表示する
