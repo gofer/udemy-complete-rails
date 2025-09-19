@@ -23,3 +23,46 @@
     - evelopment ではなく default に host等を指定しないとdocker-composeの環境では db:create などのコマンドがうまく動かない
 - ホームページを生成する
   - `rails generate controller home index`
+
+## 322. Setup email
+
+- メールの送信機能を準備する
+  - HerokuではSendGridを利用する
+    - `heroku config:set SENDGRID_USERNAME <<SendGridのユーザー名>>`
+    - `heroku config:set SENDGRID_PASSWORD <<SendGridのパスワード>>`
+- `config/environment.rb`
+  ```ruby
+  # ...
+  ActionMailer::Base.smtp_settings = {
+    :address => 'smtp.sendgrid.net',
+    :port=> '587',
+    :authentication => :plain,
+    :user_name => ENV['SENDGRID_USERNAME'],
+    :password => ENV['SENDGRID_PASSWORD'],
+    :domain => 'heroku.com',
+    :enable_starttls_auto => true
+  }
+  ```
+- `config/environments/development.rb`
+  ```ruby
+  require "active_support/core_ext/integer/time"
+
+  Rails.application.configure do
+    # ...
+    config.action_mailer.delivery_method = :test
+    config.action_mailer.default_url_options = { :host => 'http://localhost:3000' }
+    #...
+  end
+  ```
+- `config/environments/production.rb`
+  ```ruby
+  require "active_support/core_ext/integer/time"
+
+  Rails.application.configure do
+    # ...
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.default_url_options = { :host => 'ruby-on-rails-app.herokuapp.com', :protocol => 'https' }
+    #...
+  end 
+  ```
+- Gemfileとjavascriptファイルからturbolinkを除去する
