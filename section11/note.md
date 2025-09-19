@@ -66,3 +66,16 @@
   end 
   ```
 - Gemfileとjavascriptファイルからturbolinkを除去する
+
+## 324. Setup Milia and Devise
+
+- DeviseとMiliaのセットアップを行う
+  - Miliaはマルチテナントアプリを作成するためのgem
+  - (メモ) Miliaのサポートが切れているため，Philiaを利用する。
+  - (メモ) Rails 6.xを利用する際は，
+    - `~/.gem/bundler/gems/philia-64ca74a7c10d/lib/generators/philia/install_generator.rb` の
+      - `gem 'activerecord-session_store', github: 'rails/activerecord-session_store'` を
+      - `gem 'activerecord-session_store', github: 'rails/activerecord-session_store', ref: '78e0047'` へ変更してからジェネレートコマンドを実行する
+  - `rails g milia:install --org_email='do-not-reply@example.com'`
+    - (メモ) `rails g philia:install --org_email='do-not-reply@example.com'`
+- `rails db:migrate`
